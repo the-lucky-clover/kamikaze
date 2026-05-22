@@ -11,6 +11,10 @@ struct RootView: View {
                 .ignoresSafeArea()
 
             switch model.screen {
+            case .studioIntro:
+                StudioIntroView()
+            case .attractMode:
+                AttractModeView()
             case .menu:
                 MainMenuView()
             case .briefing:
@@ -26,12 +30,89 @@ struct RootView: View {
             case .settings:
                 SettingsView()
             }
+
+            model.transitionTone.color
+                .opacity(model.transitionOpacity)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+        }
+    }
+}
+
+struct StudioIntroView: View {
+    @EnvironmentObject private var model: AppModel
+    @State private var visible = false
+
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+            VStack(spacing: 18) {
+                Text("CORPORATE HEARTTHROB STUDIOS")
+                    .font(.system(size: 34, weight: .black, design: .rounded))
+                    .tracking(3)
+                Text("presents")
+                    .font(.headline)
+                    .foregroundStyle(Color.white.opacity(0.64))
+            }
+            .foregroundStyle(.white)
+            .opacity(visible ? 1 : 0)
+            .scaleEffect(visible ? 1 : 0.96)
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 0.8)) {
+                visible = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
+                model.advanceFromStudioIntro()
+            }
+        }
+    }
+}
+
+struct AttractModeView: View {
+    @EnvironmentObject private var model: AppModel
+    @State private var animate = false
+
+    var body: some View {
+        ZStack {
+            CinematicBackdropView()
+            LinearGradient(colors: [.black.opacity(0.15), .black.opacity(0.65)], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+
+            VStack(spacing: 18) {
+                Spacer()
+                Text("KAMIKAZE")
+                    .font(.system(size: 62, weight: .black, design: .serif))
+                    .foregroundStyle(.white)
+                    .scaleEffect(animate ? 1 : 0.94)
+                    .opacity(animate ? 1 : 0)
+                Text("Touch anywhere to enter the memorial.")
+                    .font(.title3)
+                    .foregroundStyle(Color.white.opacity(0.84))
+                    .opacity(animate ? 1 : 0)
+                Spacer()
+                Text("Demonstration reel — flight, storm, tactical overlay, and archive framing")
+                    .font(.footnote)
+                    .foregroundStyle(Color.white.opacity(0.66))
+                    .padding(.bottom, 36)
+                    .opacity(animate ? 1 : 0)
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            model.advanceFromAttractMode()
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.9, dampingFraction: 0.82)) {
+                animate = true
+            }
         }
     }
 }
 
 struct MainMenuView: View {
     @EnvironmentObject private var model: AppModel
+    @State private var animateIn = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
@@ -65,6 +146,14 @@ struct MainMenuView: View {
             Spacer()
         }
         .padding(32)
+        .offset(y: animateIn ? 0 : 26)
+        .scaleEffect(animateIn ? 1 : 0.97, anchor: .topLeading)
+        .opacity(animateIn ? 1 : 0)
+        .onAppear {
+            withAnimation(.spring(response: 0.75, dampingFraction: 0.8)) {
+                animateIn = true
+            }
+        }
     }
 }
 
@@ -502,6 +591,47 @@ struct TacticalOverlayView: View {
     }
 }
 
+struct CinematicBackdropView: View {
+    @State private var drift = false
+
+    var body: some View {
+        ZStack {
+            LinearGradient(colors: [Color(red: 0.07, green: 0.1, blue: 0.16), Color(red: 0.22, green: 0.25, blue: 0.31), Color(red: 0.08, green: 0.1, blue: 0.14)], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+            Circle()
+                .fill(Color(red: 0.76, green: 0.35, blue: 0.18).opacity(0.85))
+                .frame(width: 240, height: 240)
+                .blur(radius: 8)
+                .offset(x: 280, y: -220)
+            RoundedRectangle(cornerRadius: 220)
+                .fill(Color.white.opacity(0.12))
+                .frame(width: 420, height: 110)
+                .blur(radius: 8)
+                .offset(x: drift ? -280 : -220, y: -190)
+            RoundedRectangle(cornerRadius: 220)
+                .fill(Color.white.opacity(0.08))
+                .frame(width: 520, height: 130)
+                .blur(radius: 10)
+                .offset(x: drift ? 180 : 230, y: -120)
+            Rectangle()
+                .fill(LinearGradient(colors: [Color(red: 0.03, green: 0.07, blue: 0.11), Color.black], startPoint: .top, endPoint: .bottom))
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .ignoresSafeArea(edges: .bottom)
+                .overlay(alignment: .bottom) {
+                    Rectangle()
+                        .fill(Color(red: 0.08, green: 0.14, blue: 0.18))
+                        .frame(height: 240)
+                        .mask(LinearGradient(colors: [.clear, .white], startPoint: .top, endPoint: .bottom))
+                }
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 6).repeatForever(autoreverses: true)) {
+                drift = true
+            }
+        }
+    }
+}
+
 private extension ObjectiveDefinition {
     var briefText: String {
         switch self {
@@ -511,6 +641,17 @@ private extension ObjectiveDefinition {
             return "Survive for at least \(Int(seconds)) seconds after the intercept begins."
         case let .escort(timeLimit):
             return "Escort the fleet wake for \(Int(timeLimit)) seconds."
+        }
+    }
+
+    private extension TransitionTone {
+        var color: Color {
+            switch self {
+            case .black:
+                return .black
+            case .white:
+                return .white
+            }
         }
     }
 }

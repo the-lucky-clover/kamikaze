@@ -23,9 +23,9 @@
       "cinematicIntroDelay": 0
     },
     "enemySpawns": [
-      { "id": "zero_lead", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": -120, "y": 55, "z": -360 }, "heading": 0.2, "pitch": 0, "cinematicIntroDelay": 4 },
-      { "id": "zero_wing", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": 90, "y": 52, "z": -400 }, "heading": -0.2, "pitch": 0, "cinematicIntroDelay": 7 },
-      { "id": "zero_tail", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": 0, "y": 48, "z": -460 }, "heading": 0.05, "pitch": 0, "cinematicIntroDelay": 12 }
+      { "id": "zero_lead", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": -120, "y": 55, "z": -360 }, "heading": 0.35, "pitch": 0, "cinematicIntroDelay": 4 },
+      { "id": "zero_wing", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": 90, "y": 52, "z": -400 }, "heading": -0.35, "pitch": 0, "cinematicIntroDelay": 7 },
+      { "id": "zero_tail", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": 0, "y": 48, "z": -460 }, "heading": 0.1, "pitch": 0, "cinematicIntroDelay": 12 }
     ],
     "cinematicBeats": [
       { "id": "airfield_prep", "triggerTime": 1, "title": "Airfield Preparation", "body": "Crew chiefs wave through salt wind and oil fumes. Nobody mistakes the ritual for safety." },

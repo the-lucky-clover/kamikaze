@@ -69,4 +69,32 @@ struct KamikazeGameTests {
 
         #expect(decoded == mission)
     }
+
+    @Test("json manifests stay aligned with code fallbacks")
+    func manifestsStayAligned() throws {
+        let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+        let decoder = JSONDecoder()
+
+        let aircraft = try decoder.decode(
+            [AircraftBlueprint].self,
+            from: Data(contentsOf: root.appending(path: "gameplay/aircraft.json"))
+        )
+        let missions = try decoder.decode(
+            [MissionDefinition].self,
+            from: Data(contentsOf: root.appending(path: "missions/missions.json"))
+        )
+        let archive = try decoder.decode(
+            [ArchiveEntry].self,
+            from: Data(contentsOf: root.appending(path: "historical_data/archive.json"))
+        )
+        let weather = try decoder.decode(
+            [WeatherProfile].self,
+            from: Data(contentsOf: root.appending(path: "weather/presets.json"))
+        )
+
+        #expect(aircraft == ContentLibrary.aircraft)
+        #expect(missions == ContentLibrary.missions)
+        #expect(archive == ContentLibrary.archive)
+        #expect(weather == ContentLibrary.weather)
+    }
 }

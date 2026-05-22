@@ -17,6 +17,8 @@ struct GameCatalog {
 }
 
 enum AppScreen {
+    case studioIntro
+    case attractMode
     case menu
     case briefing
     case flight
@@ -26,12 +28,20 @@ enum AppScreen {
     case settings
 }
 
+enum TransitionTone {
+    case black
+    case white
+}
+
+@MainActor
 final class AppModel: ObservableObject {
-    @Published var screen: AppScreen = .menu
+    @Published var screen: AppScreen = .studioIntro
     @Published var progression: PlayerProgression
     @Published var selectedMissionID: String
     @Published var flightSession: FlightSession?
     @Published var lastOutcome: MissionOutcome = .inProgress
+    @Published var transitionOpacity: Double = 1
+    @Published var transitionTone: TransitionTone = .black
 
     let catalog: GameCatalog
     let audioDirector = AudioDirector()
@@ -43,6 +53,11 @@ final class AppModel: ObservableObject {
         selectedMissionID = catalog.missions.first?.id ?? "embers_over_midway"
         audioDirector.apply(settings: progression.settings)
         audioDirector.transition(to: .menu)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation(.easeInOut(duration: 0.8)) {
+                self.transitionOpacity = 0
+            }
+        }
     }
 
     var selectedMission: MissionDefinition {
@@ -64,26 +79,35 @@ final class AppModel: ObservableObject {
     }
 
     func showBriefing() {
-        screen = .briefing
+        performTransition(to: .briefing)
     }
 
     func showMenu() {
-        flightSession?.stop()
-        flightSession = nil
-        screen = .menu
-        audioDirector.transition(to: .menu)
+        performTransition(to: .menu) {
+            self.flightSession?.stop()
+            self.flightSession = nil
+            self.audioDirector.transition(to: .menu)
+        }
     }
 
     func showHangar() {
-        screen = .hangar
+        performTransition(to: .hangar)
     }
 
     func showArchive() {
-        screen = .archive
+        performTransition(to: .archive)
     }
 
     func showSettings() {
-        screen = .settings
+        performTransition(to: .settings)
+    }
+
+    func advanceFromStudioIntro() {
+        performTransition(to: .attractMode, tone: .black)
+    }
+
+    func advanceFromAttractMode() {
+        performTransition(to: .menu, tone: .black)
     }
 
     func startMission() {
@@ -96,21 +120,23 @@ final class AppModel: ObservableObject {
         ) { [weak self] outcome in
             self?.finishMission(outcome)
         }
-        flightSession?.stop()
-        flightSession = session
-        session.start()
-        screen = .flight
-        audioDirector.transition(to: .mission)
+        performTransition(to: .flight, tone: .white) {
+            self.flightSession?.stop()
+            self.flightSession = session
+            session.start()
+            self.audioDirector.transition(to: .mission)
+        }
     }
 
     func finishMission(_ outcome: MissionOutcome) {
-        lastOutcome = outcome
-        if outcome == .success {
-            progression.applyMissionRewards(for: selectedMission)
-            saveProgression()
+        performTransition(to: .debrief, tone: .black) {
+            self.lastOutcome = outcome
+            if outcome == .success {
+                self.progression.applyMissionRewards(for: self.selectedMission)
+                self.saveProgression()
+            }
+            self.audioDirector.transition(to: .debrief)
         }
-        screen = .debrief
-        audioDirector.transition(to: .debrief)
     }
 
     func selectAircraft(_ aircraftID: String) {
@@ -127,6 +153,20 @@ final class AppModel: ObservableObject {
 
     private func saveProgression() {
         try? saveStore.save(progression)
+    }
+
+    private func performTransition(to newScreen: AppScreen, tone: TransitionTone = .black, midpoint: (() -> Void)? = nil) {
+        transitionTone = tone
+        withAnimation(.easeInOut(duration: 0.35)) {
+            transitionOpacity = 1
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.38) {
+            midpoint?()
+            self.screen = newScreen
+            withAnimation(.easeInOut(duration: 0.55)) {
+                self.transitionOpacity = 0
+            }
+        }
     }
 }
 

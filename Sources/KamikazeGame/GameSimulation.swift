@@ -162,7 +162,7 @@ public struct GameSimulation: Sendable {
         activateIntroSpawns()
         updatePlayer(with: playerInput, deltaTime: deltaTime)
         updateEnemies(deltaTime: deltaTime)
-        resolveCombat(deltaTime: deltaTime, playerInput: playerInput)
+        resolveCombat(playerInput: playerInput)
         evaluateMissionOutcome()
     }
 
@@ -223,7 +223,7 @@ public struct GameSimulation: Sendable {
         }
     }
 
-    private mutating func resolveCombat(deltaTime: Double, playerInput: PilotInput) {
+    private mutating func resolveCombat(playerInput: PilotInput) {
         guard let playerIndex = combatants.firstIndex(where: \.isPlayer) else { return }
         if playerInput.firing {
             fireIfPossible(attackerIndex: playerIndex, preferredTargetTeam: .enemy)
@@ -234,7 +234,6 @@ public struct GameSimulation: Sendable {
                 fireIfPossible(attackerIndex: index, preferredTargetTeam: .player)
             }
         }
-        _ = deltaTime
     }
 
     private mutating func fireIfPossible(attackerIndex: Int, preferredTargetTeam: Team) {

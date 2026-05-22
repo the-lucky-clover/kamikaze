@@ -77,7 +77,7 @@ public protocol SaveStore {
     func save(_ progression: PlayerProgression) throws
 }
 
-public struct InMemorySaveStore: SaveStore {
+public final class InMemorySaveStore: SaveStore {
     public private(set) var progression: PlayerProgression
 
     public init(progression: PlayerProgression = .default) {
@@ -89,6 +89,6 @@ public struct InMemorySaveStore: SaveStore {
     }
 
     public func save(_ progression: PlayerProgression) throws {
-        _ = progression
+        self.progression = progression
     }
 }

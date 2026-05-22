@@ -166,7 +166,7 @@ final class FlightSceneRenderer: ObservableObject {
     }
 
     private func buildCloudLayer() {
-        for index in 0..<9 {
+        for _ in 0..<9 {
             let cloud = SCNNode(geometry: SCNPlane(width: 180, height: 72))
             cloud.geometry?.firstMaterial?.isDoubleSided = true
             cloud.geometry?.firstMaterial?.diffuse.contents = UIColor(white: 0.82, alpha: 0.22)
@@ -178,7 +178,6 @@ final class FlightSceneRenderer: ObservableObject {
             cloud.opacity = 0.72
             cloudNodes.append(cloud)
             scene.rootNode.addChildNode(cloud)
-            _ = index
         }
     }
 

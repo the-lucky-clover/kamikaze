@@ -20,6 +20,7 @@ final class AudioDirector {
     private var ambiencePlayer: AVAudioPlayer?
     private var settings = PlayerSettings()
     private var currentMix: MixState = .menu
+    private var reportedMissingAssets: Set<String> = []
 
     func transition(to state: MixState) {
         currentMix = state
@@ -70,6 +71,10 @@ final class AudioDirector {
 
     private func makePlayer(named name: String, volume: Double) -> AVAudioPlayer? {
         guard let url = Bundle.main.url(forResource: name, withExtension: "m4a") else {
+            if !reportedMissingAssets.contains(name) {
+                reportedMissingAssets.insert(name)
+                print("Kamikaze AudioDirector: missing bundled audio asset \(name).m4a")
+            }
             return nil
         }
         let player = try? AVAudioPlayer(contentsOf: url)

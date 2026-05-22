@@ -217,6 +217,16 @@ public enum ContentLibrary {
             cloudDensity: 0.9,
             oceanRoughness: 0.8,
             antiAircraftPressure: 0.82
+        ),
+        WeatherProfile(
+            id: "typhoon_wall",
+            displayName: "Typhoon Wall",
+            visibility: 0.2,
+            windIntensity: 0.95,
+            stormIntensity: 1.0,
+            cloudDensity: 1.0,
+            oceanRoughness: 1.0,
+            antiAircraftPressure: 0.9
         )
     ]
 
@@ -265,14 +275,21 @@ public enum ContentLibrary {
             title: "Roll Call at Dawn",
             category: "Memorial",
             unlockedByDefault: true,
-            body: "A wall of names appears before every sortie. It is not a scoreboard. It is a reminder that every machine in the sky was built to carry a living person toward someone else's grief."
+            body: "A wall of names appears before every sortie. It is not a scoreboard. It is a reminder that every aircraft in the sky once held a living person whose future narrowed to orders, weather, and fear."
         ),
         ArchiveEntry(
             id: "midway_letters",
             title: "Letters Never Posted",
             category: "Archive",
             unlockedByDefault: false,
-            body: "Recovered fragments describe fear of the ocean below more than fear of the enemy ahead. The mission reward is not glory; it is a chance to read what war interrupted."
+            body: "Recovered fragments describe exhaustion, fuel anxiety, mechanical fragility, and shame rather than heroics. The archive unlock is meant to complicate the mission, not celebrate it."
+        ),
+        ArchiveEntry(
+            id: "training_collapse",
+            title: "Pilot Training Collapse",
+            category: "Doctrine",
+            unlockedByDefault: false,
+            body: "Late-war pilot preparation compressed dramatically as experienced personnel vanished. Diaries and reports describe shorter instruction cycles, thinner maintenance margins, and a deadlier relationship between weather and inexperience."
         )
     ]
 
@@ -281,8 +298,8 @@ public enum ContentLibrary {
             id: "embers_over_midway",
             title: "Embers Over Midway",
             subtitle: "Hold the dawn long enough for the fleet to breathe.",
-            briefing: "A strike group is approaching through the stormlight. Intercept the fighters threatening the carrier screen, then guide yourself home before the ocean takes back the horizon.",
-            debrief: "The sea keeps no victory parades. Only the names you brought back, and the names you could not.",
+            briefing: "Airfield preparation rolls into launch. From the deck edge and carrier wake, climb into a long transit, locate the fleet screen, break the incoming fighters, then survive the return over a storm-darkening Pacific.",
+            debrief: "The sea keeps no victory parade. Only wake lines, names, and the silence after engines stop.",
             recommendedAircraftID: "f4f_wildcat",
             missionDuration: 240,
             archiveRewardID: "midway_letters",
@@ -298,14 +315,16 @@ public enum ContentLibrary {
                 cinematicIntroDelay: 0
             ),
             enemySpawns: [
-                SpawnDefinition(id: "zero_lead", aircraftID: "a6m_zero", team: .enemy, position: Vector3(x: -120, y: 55, z: -360), heading: 0.2, pitch: 0, cinematicIntroDelay: 4),
-                SpawnDefinition(id: "zero_wing", aircraftID: "a6m_zero", team: .enemy, position: Vector3(x: 90, y: 52, z: -400), heading: -0.2, pitch: 0, cinematicIntroDelay: 7),
-                SpawnDefinition(id: "zero_tail", aircraftID: "a6m_zero", team: .enemy, position: Vector3(x: 0, y: 48, z: -460), heading: 0.05, pitch: 0, cinematicIntroDelay: 12)
+                SpawnDefinition(id: "zero_lead", aircraftID: "a6m_zero", team: .enemy, position: Vector3(x: -120, y: 55, z: -360), heading: 0.35, pitch: 0, cinematicIntroDelay: 4),
+                SpawnDefinition(id: "zero_wing", aircraftID: "a6m_zero", team: .enemy, position: Vector3(x: 90, y: 52, z: -400), heading: -0.35, pitch: 0, cinematicIntroDelay: 7),
+                SpawnDefinition(id: "zero_tail", aircraftID: "a6m_zero", team: .enemy, position: Vector3(x: 0, y: 48, z: -460), heading: 0.1, pitch: 0, cinematicIntroDelay: 12)
             ],
             cinematicBeats: [
-                CinematicBeat(id: "brief_intro", triggerTime: 1, title: "Pacific Morning", body: "Cloud light breaks across the carrier decks. Somewhere beyond the glare, more young pilots are flying toward the same sunrise."),
-                CinematicBeat(id: "combat_note", triggerTime: 22, title: "Elegy in the Dive", body: "Every tracer line is a sentence that can never be unsaid."),
-                CinematicBeat(id: "return_home", triggerTime: 85, title: "Come Back Alive", body: "Hold formation with the fleet wake and let the engines cool before memory catches up.")
+                CinematicBeat(id: "airfield_prep", triggerTime: 1, title: "Airfield Preparation", body: "Crew chiefs wave through salt wind and oil fumes. Nobody mistakes the ritual for safety."),
+                CinematicBeat(id: "transit", triggerTime: 12, title: "Long Transit", body: "The ocean below is beautiful enough to make the mission feel obscene."),
+                CinematicBeat(id: "fleet_discovery", triggerTime: 22, title: "Fleet Discovery", body: "Carrier wakes bloom through the glare. Somewhere beyond them, more young pilots are already committed."),
+                CinematicBeat(id: "attack_run", triggerTime: 36, title: "Attack Run", body: "Every tracer line is a sentence that can never be unsaid."),
+                CinematicBeat(id: "escape", triggerTime: 85, title: "Escape or Death", body: "If the engine holds and the weather relents, point home before memory arrives.")
             ]
         )
     ]
