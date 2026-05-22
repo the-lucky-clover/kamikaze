@@ -1,0 +1,50 @@
+[
+  {
+    "id": "navigation_charts",
+    "displayName": "Better Navigation Charts",
+    "effectType": "steeringAuthority",
+    "magnitude": 0.12
+  },
+  {
+    "id": "engine_tuning",
+    "displayName": "Improved Engine Tuning",
+    "effectType": "engineCeiling",
+    "magnitude": 0.15
+  },
+  {
+    "id": "fuel_seals",
+    "displayName": "Reduced Fuel Leakage",
+    "effectType": "fuelLeakReduction",
+    "magnitude": 0.4
+  },
+  {
+    "id": "reinforced_cables",
+    "displayName": "Reinforced Control Cables",
+    "effectType": "steeringAuthority",
+    "magnitude": 0.18
+  },
+  {
+    "id": "better_optics",
+    "displayName": "Better Optics",
+    "effectType": "aimAssist",
+    "magnitude": 0.25
+  },
+  {
+    "id": "pilot_stamina",
+    "displayName": "Improved Pilot Stamina",
+    "effectType": "stabilityDamping",
+    "magnitude": 0.2
+  },
+  {
+    "id": "weather_tools",
+    "displayName": "Weather Prediction Tools",
+    "effectType": "stabilityDamping",
+    "magnitude": 0.15
+  },
+  {
+    "id": "radio_clarity",
+    "displayName": "Radio Clarity Upgrades",
+    "effectType": "aimAssist",
+    "magnitude": 0.15
+  }
+]

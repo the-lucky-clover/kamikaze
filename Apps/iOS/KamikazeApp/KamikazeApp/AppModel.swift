@@ -1,4 +1,3 @@
-import Foundation
 import SwiftUI
 import Kamikaze
 
@@ -6,26 +5,37 @@ struct GameCatalog {
     var aircraft: [AircraftBlueprint]
     var missions: [MissionDefinition]
     var archive: [ArchiveEntry]
+    var upgrades: [UpgradeDefinition]
+    var weather: [WeatherProfile]
 
     static func load() -> GameCatalog {
         GameCatalog(
             aircraft: Bundle.main.decode([AircraftBlueprint].self, from: "aircraft.json") ?? ContentLibrary.aircraft,
             missions: Bundle.main.decode([MissionDefinition].self, from: "missions.json") ?? ContentLibrary.missions,
-            archive: Bundle.main.decode([ArchiveEntry].self, from: "archive.json") ?? ContentLibrary.archive
+            archive: Bundle.main.decode([ArchiveEntry].self, from: "archive.json") ?? ContentLibrary.archive,
+            upgrades: Bundle.main.decode([UpgradeDefinition].self, from: "upgrades.json") ?? ContentLibrary.upgrades,
+            weather: Bundle.main.decode([WeatherProfile].self, from: "presets.json") ?? ContentLibrary.weather
         )
     }
+}
+
+enum CameraMode {
+    case chase
+    case cockpit
 }
 
 enum AppScreen {
     case studioIntro
     case attractMode
     case menu
+    case missionSelect
     case briefing
     case flight
     case debrief
     case archive
     case hangar
     case settings
+    case replay
 }
 
 enum TransitionTone {
@@ -42,21 +52,39 @@ final class AppModel: ObservableObject {
     @Published var lastOutcome: MissionOutcome = .inProgress
     @Published var transitionOpacity: Double = 1
     @Published var transitionTone: TransitionTone = .black
+    @Published var lastReplayFrames: [(time: Double, snapshot: MissionSnapshot)] = []
 
     let catalog: GameCatalog
     let audioDirector = AudioDirector()
-    private let saveStore = UserDefaultsSaveStore()
+    private let saveStore: any SaveStore = {
+        let fs = FileSystemSaveStore()
+        // Prefer file-system persistence; fall back to UserDefaults if the
+        // file doesn't exist yet or is unreadable (first launch, migration, etc.)
+        if (try? fs.load()) != nil {
+            return fs
+        }
+        return UserDefaultsSaveStore()
+    }()
 
     init() {
         catalog = .load()
         progression = (try? saveStore.load()) ?? .default
-        selectedMissionID = catalog.missions.first?.id ?? "embers_over_midway"
+        selectedMissionID = progression.availableMissions.first?.id ?? catalog.missions.first?.id ?? "embers_over_midway"
         audioDirector.apply(settings: progression.settings)
         audioDirector.transition(to: .menu)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             withAnimation(.easeInOut(duration: 0.8)) {
                 self.transitionOpacity = 0
             }
+        }
+    }
+
+    var availableMissions: [MissionDefinition] {
+        catalog.missions.enumerated().compactMap { index, mission in
+            guard index == 0 || progression.completedMissionIDs.contains(mission.id) || progression.completedMissionIDs.contains(catalog.missions[index - 1].id) else {
+                return nil
+            }
+            return mission
         }
     }
 
@@ -78,6 +106,22 @@ final class AppModel: ObservableObject {
         catalog.archive.filter { progression.unlockedArchiveEntryIDs.contains($0.id) }
     }
 
+    var unlockedUpgrades: [UpgradeDefinition] {
+        catalog.upgrades.filter { progression.purchasedUpgradeIDs.contains($0.id) }
+    }
+
+    func weatherProfile(for mission: MissionDefinition) -> WeatherProfile {
+        catalog.weather.first(where: { $0.id == mission.weatherProfileID }) ?? ContentLibrary.weather[0]
+    }
+
+    func isMissionCompleted(_ mission: MissionDefinition) -> Bool {
+        progression.completedMissionIDs.contains(mission.id)
+    }
+
+    func isMissionUnlocked(_ mission: MissionDefinition) -> Bool {
+        availableMissions.contains(where: { $0.id == mission.id })
+    }
+
     func showBriefing() {
         performTransition(to: .briefing)
     }
@@ -90,6 +134,10 @@ final class AppModel: ObservableObject {
         }
     }
 
+    func showMissionSelect() {
+        performTransition(to: .missionSelect)
+    }
+
     func showHangar() {
         performTransition(to: .hangar)
     }
@@ -100,6 +148,10 @@ final class AppModel: ObservableObject {
 
     func showSettings() {
         performTransition(to: .settings)
+    }
+
+    func showReplay() {
+        performTransition(to: .replay)
     }
 
     func advanceFromStudioIntro() {
@@ -115,6 +167,7 @@ final class AppModel: ObservableObject {
             mission: selectedMission,
             selectedAircraft: selectedAircraft,
             aircraftCatalog: catalog.aircraft,
+            purchasedUpgradeIDs: progression.purchasedUpgradeIDs,
             settings: progression.settings,
             audioDirector: audioDirector
         ) { [weak self] outcome in
@@ -131,6 +184,9 @@ final class AppModel: ObservableObject {
     func finishMission(_ outcome: MissionOutcome) {
         performTransition(to: .debrief, tone: .black) {
             self.lastOutcome = outcome
+            if let session = self.flightSession {
+                self.lastReplayFrames = session.replayFrames
+            }
             if outcome == .success {
                 self.progression.applyMissionRewards(for: self.selectedMission)
                 self.saveProgression()
@@ -170,6 +226,20 @@ final class AppModel: ObservableObject {
     }
 }
 
+struct ReplayRecorder: Sendable {
+    private(set) var frames: [(time: Double, snapshot: MissionSnapshot)] = []
+    private let maxFrames = 3600
+
+    mutating func record(time: Double, snapshot: MissionSnapshot) {
+        guard frames.count < maxFrames else { return }
+        frames.append((time: time, snapshot: snapshot))
+    }
+
+    mutating func reset() {
+        frames.removeAll(keepingCapacity: true)
+    }
+}
+
 @MainActor
 final class FlightSession: ObservableObject {
     @Published private(set) var snapshot: MissionSnapshot
@@ -177,8 +247,10 @@ final class FlightSession: ObservableObject {
     @Published var throttleInput: Double = 0
     @Published var pitchInput: Double = 0
     @Published var yawInput: Double = 0
+    @Published var rollInput: Double = 0
     @Published var firing: Bool = false
     @Published var isPaused = false
+    @Published var cameraMode: CameraMode = .chase
 
     let mission: MissionDefinition
     let renderer = FlightSceneRenderer()
@@ -188,11 +260,18 @@ final class FlightSession: ObservableObject {
     private let settings: PlayerSettings
     private let audioDirector: AudioDirector
     private let onComplete: (MissionOutcome) -> Void
+    private let weatherProfile: WeatherProfile
+    private var replayRecorder = ReplayRecorder()
+    private var nextEngineStrainTime: Double = 0
+    private var nextWeatherAudioTime: Double = 0
+
+    var replayFrames: [(time: Double, snapshot: MissionSnapshot)] { replayRecorder.frames }
 
     init(
         mission: MissionDefinition,
         selectedAircraft: AircraftBlueprint,
         aircraftCatalog: [AircraftBlueprint],
+        purchasedUpgradeIDs: [String],
         settings: PlayerSettings,
         audioDirector: AudioDirector,
         onComplete: @escaping (MissionOutcome) -> Void
@@ -201,13 +280,24 @@ final class FlightSession: ObservableObject {
         self.settings = settings
         self.audioDirector = audioDirector
         self.onComplete = onComplete
-        simulation = GameSimulation(mission: mission, selectedAircraft: selectedAircraft, aircraftCatalog: aircraftCatalog)
+        weatherProfile = ContentLibrary.weather.first(where: { $0.id == mission.weatherProfileID }) ?? ContentLibrary.weather[0]
+        simulation = GameSimulation(
+            mission: mission,
+            selectedAircraft: selectedAircraft,
+            aircraftCatalog: aircraftCatalog,
+            purchasedUpgradeIDs: purchasedUpgradeIDs,
+            aimAssistLevel: settings.aimAssistLevel
+        )
         snapshot = simulation.snapshot
+        renderer.cameraMode = cameraMode
+        renderer.applyEnvironment(weather: weatherProfile, tone: mission.environmentTone)
         renderer.update(with: snapshot)
     }
 
     func start() {
         stop()
+        replayRecorder.reset()
+        replayRecorder.record(time: snapshot.time, snapshot: snapshot)
         timer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
             self?.tick()
         }
@@ -229,19 +319,33 @@ final class FlightSession: ObservableObject {
                 throttle: throttleInput,
                 pitch: settings.invertedPitch ? -pitchInput : pitchInput,
                 yaw: yawInput,
+                roll: rollInput,
                 firing: firing
             ),
             deltaTime: 1.0 / 30.0
         )
         snapshot = simulation.snapshot
+        replayRecorder.record(time: simulation.missionTime, snapshot: simulation.snapshot)
+        renderer.cameraMode = cameraMode
         renderer.update(with: snapshot)
         handle(events: snapshot.events)
         audioDirector.updateDynamicMix(
             altitude: snapshot.player.position.y,
             combatIntensity: min(1, Double(snapshot.events.count) / 4),
-            weatherSeverity: 0.72,
+            weatherSeverity: weatherProfile.stormIntensity,
             fleetProximity: max(0, 1 - (snapshot.player.position.length / 1_200))
         )
+        if snapshot.player.damageState.engineLoss > 0.5, snapshot.time >= nextEngineStrainTime {
+            audioDirector.playEffect(.engineStrain)
+            nextEngineStrainTime = snapshot.time + 3
+        }
+        if weatherProfile.stormIntensity > 0.7, snapshot.time >= nextWeatherAudioTime {
+            audioDirector.playEffect(.rainHeavy)
+            nextWeatherAudioTime = snapshot.time + 4
+        } else if weatherProfile.stormIntensity > 0.3, snapshot.time >= nextWeatherAudioTime {
+            audioDirector.playEffect(.rainLight)
+            nextWeatherAudioTime = snapshot.time + 6
+        }
         if snapshot.outcome != .inProgress {
             stop()
             onComplete(snapshot.outcome)
@@ -262,8 +366,10 @@ final class FlightSession: ObservableObject {
                         self?.cinematicText = nil
                     }
                 }
-            case .hit:
-                break
+            case let .hit(targetID):
+                if targetID == snapshot.player.id {
+                    audioDirector.playEffect(.cockpitCreak)
+                }
             }
         }
     }
@@ -283,6 +389,27 @@ struct UserDefaultsSaveStore: SaveStore {
     func save(_ progression: PlayerProgression) throws {
         let data = try JSONEncoder().encode(progression)
         defaults.set(data, forKey: key)
+    }
+}
+
+struct FileSystemSaveStore: SaveStore {
+    private let fileURL: URL
+
+    init() {
+        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let dir = support.appendingPathComponent("Kamikaze", isDirectory: true)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: nil)
+        fileURL = dir.appendingPathComponent("progression.json")
+    }
+
+    func load() throws -> PlayerProgression {
+        let data = try Data(contentsOf: fileURL)
+        return try JSONDecoder().decode(PlayerProgression.self, from: data)
+    }
+
+    func save(_ progression: PlayerProgression) throws {
+        let data = try JSONEncoder().encode(progression)
+        try data.write(to: fileURL, options: .atomic)
     }
 }
 

@@ -1,24 +1,104 @@
 {
+  "music_tracks": [
+    {
+      "name": "menu_theme",
+      "format": "m4a",
+      "loop": true,
+      "description": "Taiko and sparse piano for main menu"
+    },
+    {
+      "name": "mission_theme",
+      "format": "m4a",
+      "loop": true,
+      "description": "Escalating percussion and orchestral drones for combat"
+    },
+    {
+      "name": "debrief_theme",
+      "format": "m4a",
+      "loop": true,
+      "description": "Low brass and piano for debrief and reflection"
+    }
+  ],
+  "ambience_loops": [
+    {
+      "name": "harbor_ambience",
+      "format": "m4a",
+      "loop": true,
+      "description": "Distant harbor sounds for menu and debrief"
+    },
+    {
+      "name": "ocean_wind",
+      "format": "m4a",
+      "loop": true,
+      "description": "Open ocean wind and wave for flight"
+    },
+    {
+      "name": "rain_heavy_loop",
+      "format": "m4a",
+      "loop": true,
+      "description": "Heavy Pacific typhoon rain"
+    },
+    {
+      "name": "rain_light_loop",
+      "format": "m4a",
+      "loop": true,
+      "description": "Light Pacific squall rain"
+    }
+  ],
+  "effects": [
+    {
+      "name": "guns_fire",
+      "trigger": "shotFired event",
+      "systemSound": 1108
+    },
+    {
+      "name": "explosion",
+      "trigger": "destroyed event",
+      "systemSound": 1322
+    },
+    {
+      "name": "confirm_ui",
+      "trigger": "menu selection",
+      "systemSound": 1519
+    },
+    {
+      "name": "aa_fire",
+      "trigger": "navalAAEmitter hit",
+      "systemSound": 1306
+    },
+    {
+      "name": "cockpit_creak",
+      "trigger": "high g-force or damage",
+      "systemSound": 1111
+    },
+    {
+      "name": "rain_heavy",
+      "trigger": "stormIntensity > 0.7",
+      "systemSound": 1301
+    },
+    {
+      "name": "rain_light",
+      "trigger": "stormIntensity > 0.3",
+      "systemSound": 1300
+    },
+    {
+      "name": "engine_strain",
+      "trigger": "engineLoss > 0.5",
+      "systemSound": 1005
+    }
+  ],
+  "dynamic_mix_inputs": [
+    "altitude",
+    "combat_intensity",
+    "weather_severity",
+    "fleet_proximity"
+  ],
   "music_direction": [
-    "taiko percussion",
-    "orchestral drones",
-    "naval drums",
-    "low brass tension",
-    "analog radio static",
-    "sparse piano motifs"
-  ],
-  "combat_music": [
-    "escalating percussion",
-    "distorted strings",
-    "industrial metallic impacts"
-  ],
-  "ambience": [
-    "ocean wind",
-    "aircraft creaks",
-    "rain",
-    "cockpit vibration",
-    "distant artillery",
-    "muffled underwater crash audio"
-  ],
-  "dynamic_mix_inputs": ["altitude", "combat_intensity", "weather", "proximity_to_fleet"]
+    "taiko_percussion",
+    "orchestral_drones",
+    "naval_drums",
+    "low_brass_tension",
+    "analog_radio_static",
+    "sparse_piano_motifs"
+  ]
 }

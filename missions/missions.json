@@ -9,30 +9,981 @@
     "missionDuration": 240,
     "archiveRewardID": "midway_letters",
     "aircraftRewardID": "sbd_dauntless",
+    "weatherProfileID": "golden_pacific",
+    "environmentTone": "earlyWar",
+    "upgradeRewardID": null,
     "objectives": [
-      { "type": "destroyAllEnemies" },
-      { "type": "survive", "seconds": 90 }
+      {
+        "type": "destroyAllEnemies"
+      },
+      {
+        "type": "survive",
+        "seconds": 90
+      }
     ],
     "playerSpawn": {
       "id": "player",
       "aircraftID": "f4f_wildcat",
       "team": "player",
-      "position": { "x": 0, "y": 40, "z": 0 },
+      "position": {
+        "x": 0,
+        "y": 40,
+        "z": 0
+      },
       "heading": 0,
       "pitch": 0,
-      "cinematicIntroDelay": 0
+      "cinematicIntroDelay": 0,
+      "aiRole": "intercept"
     },
     "enemySpawns": [
-      { "id": "zero_lead", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": -120, "y": 55, "z": -360 }, "heading": 0.35, "pitch": 0, "cinematicIntroDelay": 4 },
-      { "id": "zero_wing", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": 90, "y": 52, "z": -400 }, "heading": -0.35, "pitch": 0, "cinematicIntroDelay": 7 },
-      { "id": "zero_tail", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": 0, "y": 48, "z": -460 }, "heading": 0.1, "pitch": 0, "cinematicIntroDelay": 12 }
+      {
+        "id": "zero_lead",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": -120,
+          "y": 55,
+          "z": -360
+        },
+        "heading": 0.35,
+        "pitch": 0,
+        "cinematicIntroDelay": 4,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "zero_wing",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 90,
+          "y": 52,
+          "z": -400
+        },
+        "heading": -0.35,
+        "pitch": 0,
+        "cinematicIntroDelay": 7,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "zero_tail",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 0,
+          "y": 48,
+          "z": -460
+        },
+        "heading": 0.1,
+        "pitch": 0,
+        "cinematicIntroDelay": 12,
+        "aiRole": "intercept"
+      }
     ],
     "cinematicBeats": [
-      { "id": "airfield_prep", "triggerTime": 1, "title": "Airfield Preparation", "body": "Crew chiefs wave through salt wind and oil fumes. Nobody mistakes the ritual for safety." },
-      { "id": "transit", "triggerTime": 12, "title": "Long Transit", "body": "The ocean below is beautiful enough to make the mission feel obscene." },
-      { "id": "fleet_discovery", "triggerTime": 22, "title": "Fleet Discovery", "body": "Carrier wakes bloom through the glare. Somewhere beyond them, more young pilots are already committed." },
-      { "id": "attack_run", "triggerTime": 36, "title": "Attack Run", "body": "Every tracer line is a sentence that can never be unsaid." },
-      { "id": "escape", "triggerTime": 85, "title": "Escape or Death", "body": "If the engine holds and the weather relents, point home before memory arrives." }
+      {
+        "id": "airfield_prep",
+        "triggerTime": 1,
+        "title": "Airfield Preparation",
+        "body": "Crew chiefs wave through salt wind and oil fumes. Nobody mistakes the ritual for safety."
+      },
+      {
+        "id": "transit",
+        "triggerTime": 12,
+        "title": "Long Transit",
+        "body": "The ocean below is beautiful enough to make the mission feel obscene."
+      },
+      {
+        "id": "fleet_discovery",
+        "triggerTime": 22,
+        "title": "Fleet Discovery",
+        "body": "Carrier wakes bloom through the glare. Somewhere beyond them, more young pilots are already committed."
+      },
+      {
+        "id": "attack_run",
+        "triggerTime": 36,
+        "title": "Attack Run",
+        "body": "Every tracer line is a sentence that can never be unsaid."
+      },
+      {
+        "id": "escape",
+        "triggerTime": 85,
+        "title": "Escape or Death",
+        "body": "If the engine holds and the weather relents, point home before memory arrives."
+      }
+    ],
+    "navalAAEmitters": []
+  },
+  {
+    "id": "leyte_gulf_dusk",
+    "title": "Leyte Gulf — Dusk Over the Sibuyan Sea",
+    "subtitle": "Hold the convoy line until the fleet can breathe again.",
+    "briefing": "A resupply convoy threads the Sibuyan Sea under fading light. Enemy air cover is light but persistent. Escort the column long enough for it to reach the straits.",
+    "debrief": "The convoy moved. Not everyone who escorted it came back with them.",
+    "recommendedAircraftID": "f6f_hellcat",
+    "missionDuration": 280,
+    "archiveRewardID": "leyte_gulf_doctrine",
+    "aircraftRewardID": "n1k2j_shinden",
+    "weatherProfileID": "golden_pacific",
+    "environmentTone": "earlyWar",
+    "upgradeRewardID": "navigation_charts",
+    "objectives": [
+      {
+        "type": "escort",
+        "timeLimit": 150
+      },
+      {
+        "type": "survive",
+        "seconds": 120
+      }
+    ],
+    "playerSpawn": {
+      "id": "player",
+      "aircraftID": "f6f_hellcat",
+      "team": "player",
+      "position": {
+        "x": 0,
+        "y": 38,
+        "z": 0
+      },
+      "heading": 0,
+      "pitch": 0,
+      "cinematicIntroDelay": 0,
+      "aiRole": "intercept"
+    },
+    "enemySpawns": [
+      {
+        "id": "patrol_a",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": -180,
+          "y": 50,
+          "z": -300
+        },
+        "heading": 0.4,
+        "pitch": 0,
+        "cinematicIntroDelay": 5,
+        "aiRole": "patrol"
+      },
+      {
+        "id": "patrol_b",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 160,
+          "y": 48,
+          "z": -340
+        },
+        "heading": -0.4,
+        "pitch": 0,
+        "cinematicIntroDelay": 8,
+        "aiRole": "patrol"
+      },
+      {
+        "id": "intercept_lead",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 0,
+          "y": 55,
+          "z": -420
+        },
+        "heading": 0.2,
+        "pitch": 0,
+        "cinematicIntroDelay": 14,
+        "aiRole": "intercept"
+      }
+    ],
+    "cinematicBeats": [
+      {
+        "id": "convoy_prep",
+        "triggerTime": 1,
+        "title": "Convoy Assembly",
+        "body": "Supply ships form lines across the Sibuyan before first light. The formations feel too optimistic for 1944."
+      },
+      {
+        "id": "enemy_contact",
+        "triggerTime": 16,
+        "title": "Enemy Contact",
+        "body": "Zeros fall from cloud cover. They were not unexpected."
+      },
+      {
+        "id": "fleet_pressure",
+        "triggerTime": 45,
+        "title": "Fleet Under Fire",
+        "body": "The AA guns below are firing at everything, including instinct."
+      },
+      {
+        "id": "holding_pattern",
+        "triggerTime": 90,
+        "title": "Holding On",
+        "body": "Each minute of escort is a minute the column is still moving."
+      },
+      {
+        "id": "dusk_closing",
+        "triggerTime": 140,
+        "title": "Dusk Closing",
+        "body": "The light is leaving the water. The mission does not end when the light does."
+      }
+    ],
+    "navalAAEmitters": [
+      {
+        "position": {
+          "x": 300,
+          "y": 0,
+          "z": -500
+        },
+        "range": 280,
+        "fireRate": 0.6,
+        "damagePerRound": 6
+      },
+      {
+        "position": {
+          "x": -320,
+          "y": 0,
+          "z": -480
+        },
+        "range": 280,
+        "fireRate": 0.6,
+        "damagePerRound": 6
+      }
+    ]
+  },
+  {
+    "id": "iwo_jima_ash",
+    "title": "Iwo Jima — Ash Horizon",
+    "subtitle": "Break the air screen before the grey swallows everything.",
+    "briefing": "A late-war squall is rolling in off the Pacific. Enemy fighters are holding a defensive perimeter over the volcanic ash fields. Your fuel load is tight. Do not dwell.",
+    "debrief": "The ash fields kept no record of what crossed them. Only the weather remembered anything.",
+    "recommendedAircraftID": "f4u_corsair",
+    "missionDuration": 260,
+    "archiveRewardID": "iwo_jima_letters",
+    "aircraftRewardID": "ki84_hayate",
+    "weatherProfileID": "late_war_squall",
+    "environmentTone": "lateWar",
+    "upgradeRewardID": "engine_tuning",
+    "objectives": [
+      {
+        "type": "destroyAllEnemies"
+      },
+      {
+        "type": "survive",
+        "seconds": 100
+      }
+    ],
+    "playerSpawn": {
+      "id": "player",
+      "aircraftID": "f4u_corsair",
+      "team": "player",
+      "position": {
+        "x": 0,
+        "y": 42,
+        "z": 0
+      },
+      "heading": 0,
+      "pitch": 0,
+      "cinematicIntroDelay": 0,
+      "aiRole": "intercept"
+    },
+    "enemySpawns": [
+      {
+        "id": "ash_lead",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": -130,
+          "y": 58,
+          "z": -350
+        },
+        "heading": 0.3,
+        "pitch": 0,
+        "cinematicIntroDelay": 5,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "ash_wing_a",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 100,
+          "y": 54,
+          "z": -390
+        },
+        "heading": -0.3,
+        "pitch": 0,
+        "cinematicIntroDelay": 7,
+        "aiRole": "formationWing"
+      },
+      {
+        "id": "ash_wing_b",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 0,
+          "y": 52,
+          "z": -430
+        },
+        "heading": 0.1,
+        "pitch": 0,
+        "cinematicIntroDelay": 9,
+        "aiRole": "formationWing"
+      },
+      {
+        "id": "ash_high",
+        "aircraftID": "n1k2j_shinden",
+        "team": "enemy",
+        "position": {
+          "x": -60,
+          "y": 72,
+          "z": -380
+        },
+        "heading": 0.15,
+        "pitch": 0,
+        "cinematicIntroDelay": 13,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "ash_reserve",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 180,
+          "y": 50,
+          "z": -460
+        },
+        "heading": -0.2,
+        "pitch": 0,
+        "cinematicIntroDelay": 18,
+        "aiRole": "patrol"
+      }
+    ],
+    "cinematicBeats": [
+      {
+        "id": "ash_launch",
+        "triggerTime": 1,
+        "title": "Ash Fields Below",
+        "body": "The island is grey under volcanic dust. Nothing about this place looks survivable."
+      },
+      {
+        "id": "squall_front",
+        "triggerTime": 14,
+        "title": "Squall Front",
+        "body": "The storm is already here. The enemy found the same cloud cover you did."
+      },
+      {
+        "id": "formation_break",
+        "triggerTime": 28,
+        "title": "Formation Contact",
+        "body": "They are flying in pairs. Someone trained them carefully, then sent them here."
+      },
+      {
+        "id": "fuel_warning",
+        "triggerTime": 75,
+        "title": "Fuel Margin Narrowing",
+        "body": "The weather is burning fuel you were counting on for the return."
+      },
+      {
+        "id": "ash_debrief",
+        "triggerTime": 105,
+        "title": "Breaking Through",
+        "body": "If the engine holds, you are already past the worst of it. The island does not look back."
+      }
+    ],
+    "navalAAEmitters": [
+      {
+        "position": {
+          "x": 200,
+          "y": 0,
+          "z": -600
+        },
+        "range": 260,
+        "fireRate": 0.8,
+        "damagePerRound": 7
+      },
+      {
+        "position": {
+          "x": -200,
+          "y": 0,
+          "z": -550
+        },
+        "range": 260,
+        "fireRate": 0.8,
+        "damagePerRound": 7
+      },
+      {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -700
+        },
+        "range": 260,
+        "fireRate": 0.7,
+        "damagePerRound": 7
+      },
+      {
+        "position": {
+          "x": 350,
+          "y": 0,
+          "z": -620
+        },
+        "range": 240,
+        "fireRate": 0.7,
+        "damagePerRound": 6
+      }
+    ]
+  },
+  {
+    "id": "okinawa_ten_go",
+    "title": "Okinawa — Ten-Go",
+    "subtitle": "The carrier group is not a target. It is a wall.",
+    "briefing": "Operation Ten-Go has positioned the most heavily defended carrier group in the Pacific. Combat air patrols and overlapping AA fire blanket the approaches. This is not a mission you were meant to survive.",
+    "debrief": "Ten-Go was the Japanese Navy's final major offensive. History recorded it. The Pacific forgot nothing.",
+    "recommendedAircraftID": "f4u_corsair",
+    "missionDuration": 300,
+    "archiveRewardID": "okinawa_ten_go_record",
+    "aircraftRewardID": "f6f_hellcat",
+    "weatherProfileID": "late_war_squall",
+    "environmentTone": "lateWar",
+    "upgradeRewardID": "reinforced_cables",
+    "objectives": [
+      {
+        "type": "destroyAllEnemies"
+      }
+    ],
+    "playerSpawn": {
+      "id": "player",
+      "aircraftID": "f4u_corsair",
+      "team": "player",
+      "position": {
+        "x": 0,
+        "y": 44,
+        "z": 0
+      },
+      "heading": 0,
+      "pitch": 0,
+      "cinematicIntroDelay": 0,
+      "aiRole": "intercept"
+    },
+    "enemySpawns": [
+      {
+        "id": "cap_lead",
+        "aircraftID": "n1k2j_shinden",
+        "team": "enemy",
+        "position": {
+          "x": -140,
+          "y": 60,
+          "z": -320
+        },
+        "heading": 0.4,
+        "pitch": 0,
+        "cinematicIntroDelay": 4,
+        "aiRole": "patrol"
+      },
+      {
+        "id": "cap_wing_a",
+        "aircraftID": "n1k2j_shinden",
+        "team": "enemy",
+        "position": {
+          "x": 110,
+          "y": 56,
+          "z": -360
+        },
+        "heading": -0.3,
+        "pitch": 0,
+        "cinematicIntroDelay": 6,
+        "aiRole": "formationWing"
+      },
+      {
+        "id": "cap_wing_b",
+        "aircraftID": "n1k2j_shinden",
+        "team": "enemy",
+        "position": {
+          "x": -80,
+          "y": 64,
+          "z": -400
+        },
+        "heading": 0.2,
+        "pitch": 0,
+        "cinematicIntroDelay": 9,
+        "aiRole": "formationWing"
+      },
+      {
+        "id": "intercept_a",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 180,
+          "y": 52,
+          "z": -440
+        },
+        "heading": -0.15,
+        "pitch": 0,
+        "cinematicIntroDelay": 13,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "intercept_b",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": -200,
+          "y": 50,
+          "z": -460
+        },
+        "heading": 0.15,
+        "pitch": 0,
+        "cinematicIntroDelay": 16,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "reserve_cap",
+        "aircraftID": "ki84_hayate",
+        "team": "enemy",
+        "position": {
+          "x": 0,
+          "y": 68,
+          "z": -500
+        },
+        "heading": 0.0,
+        "pitch": 0,
+        "cinematicIntroDelay": 22,
+        "aiRole": "patrol"
+      }
+    ],
+    "cinematicBeats": [
+      {
+        "id": "ten_go_brief",
+        "triggerTime": 1,
+        "title": "Operation Ten-Go",
+        "body": "The Yamato sailed on a one-way sortie. The carrier group took the same logic to its conclusion."
+      },
+      {
+        "id": "cap_contact",
+        "triggerTime": 14,
+        "title": "CAP Contact",
+        "body": "Four, six fighters. They have altitude and patience you do not."
+      },
+      {
+        "id": "aa_wall",
+        "triggerTime": 30,
+        "title": "AA Wall",
+        "body": "The anti-aircraft fire below is not aimed. It fills space and dares you to occupy it."
+      },
+      {
+        "id": "attrition",
+        "triggerTime": 70,
+        "title": "Attrition",
+        "body": "Each pass costs something the aircraft cannot give back."
+      },
+      {
+        "id": "final_run",
+        "triggerTime": 120,
+        "title": "The Last Approach",
+        "body": "Whatever is left of the formation is still fighting. History watches this part closely."
+      }
+    ],
+    "navalAAEmitters": [
+      {
+        "position": {
+          "x": 200,
+          "y": 0,
+          "z": -700
+        },
+        "range": 300,
+        "fireRate": 1.1,
+        "damagePerRound": 9
+      },
+      {
+        "position": {
+          "x": -200,
+          "y": 0,
+          "z": -680
+        },
+        "range": 300,
+        "fireRate": 1.1,
+        "damagePerRound": 9
+      },
+      {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -800
+        },
+        "range": 300,
+        "fireRate": 1.2,
+        "damagePerRound": 9
+      },
+      {
+        "position": {
+          "x": 320,
+          "y": 0,
+          "z": -740
+        },
+        "range": 280,
+        "fireRate": 1.0,
+        "damagePerRound": 8
+      },
+      {
+        "position": {
+          "x": -320,
+          "y": 0,
+          "z": -720
+        },
+        "range": 280,
+        "fireRate": 1.0,
+        "damagePerRound": 8
+      },
+      {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -600
+        },
+        "range": 280,
+        "fireRate": 0.9,
+        "damagePerRound": 8
+      }
+    ]
+  },
+  {
+    "id": "kyushu_kikusui",
+    "title": "Kyushu — Kikusui",
+    "subtitle": "The storm is not the enemy. Everything is the enemy.",
+    "briefing": "Typhoon weather over Kyushu. The Kikusui operations have stripped the air reserves to nothing. Visibility is twenty percent. The AA is absolute. Fly until the engine stops or the mission is over.",
+    "debrief": "Kikusui. Floating chrysanthemum. A name chosen for its poetry. The Pacific found a different word for it.",
+    "recommendedAircraftID": "n1k2j_shinden",
+    "missionDuration": 260,
+    "archiveRewardID": "infrastructure_collapse",
+    "aircraftRewardID": null,
+    "weatherProfileID": "typhoon_wall",
+    "environmentTone": "lateWar",
+    "upgradeRewardID": "fuel_seals",
+    "objectives": [
+      {
+        "type": "destroyAllEnemies"
+      },
+      {
+        "type": "survive",
+        "seconds": 120
+      }
+    ],
+    "playerSpawn": {
+      "id": "player",
+      "aircraftID": "n1k2j_shinden",
+      "team": "player",
+      "position": {
+        "x": 0,
+        "y": 36,
+        "z": 0
+      },
+      "heading": 0,
+      "pitch": 0,
+      "cinematicIntroDelay": 0,
+      "aiRole": "intercept"
+    },
+    "enemySpawns": [
+      {
+        "id": "kikusui_lead",
+        "aircraftID": "n1k2j_shinden",
+        "team": "enemy",
+        "position": {
+          "x": -110,
+          "y": 50,
+          "z": -300
+        },
+        "heading": 0.5,
+        "pitch": 0,
+        "cinematicIntroDelay": 4,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "kikusui_b",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 90,
+          "y": 46,
+          "z": -340
+        },
+        "heading": -0.4,
+        "pitch": 0,
+        "cinematicIntroDelay": 7,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "kikusui_c",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 0,
+          "y": 44,
+          "z": -380
+        },
+        "heading": 0.1,
+        "pitch": 0,
+        "cinematicIntroDelay": 10,
+        "aiRole": "formationWing"
+      },
+      {
+        "id": "kikusui_d",
+        "aircraftID": "n1k2j_shinden",
+        "team": "enemy",
+        "position": {
+          "x": -80,
+          "y": 54,
+          "z": -420
+        },
+        "heading": 0.2,
+        "pitch": 0,
+        "cinematicIntroDelay": 15,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "kikusui_reserve",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 120,
+          "y": 48,
+          "z": -460
+        },
+        "heading": -0.2,
+        "pitch": 0,
+        "cinematicIntroDelay": 20,
+        "aiRole": "patrol"
+      }
+    ],
+    "cinematicBeats": [
+      {
+        "id": "typhoon_wall",
+        "triggerTime": 1,
+        "title": "Typhoon Wall",
+        "body": "Visibility dropped below twenty percent an hour ago. Flying here is a choice between storms."
+      },
+      {
+        "id": "stripped_reserves",
+        "triggerTime": 12,
+        "title": "Stripped Reserves",
+        "body": "The pilots sent here today were the last of them. The training program ended months before they were ready."
+      },
+      {
+        "id": "kikusui_contact",
+        "triggerTime": 26,
+        "title": "Contact in the Grey",
+        "body": "They appear in the storm like something the war dreamed up for its final act."
+      },
+      {
+        "id": "engine_margin",
+        "triggerTime": 80,
+        "title": "Engine Margin",
+        "body": "The oil pressure is lying to you. The engine knows."
+      },
+      {
+        "id": "final_kikusui",
+        "triggerTime": 120,
+        "title": "Kikusui",
+        "body": "Floating chrysanthemum. The poetry was chosen before anyone knew what it would cost."
+      }
+    ],
+    "navalAAEmitters": [
+      {
+        "position": {
+          "x": 150,
+          "y": 0,
+          "z": -500
+        },
+        "range": 280,
+        "fireRate": 1.3,
+        "damagePerRound": 11
+      },
+      {
+        "position": {
+          "x": -150,
+          "y": 0,
+          "z": -520
+        },
+        "range": 280,
+        "fireRate": 1.3,
+        "damagePerRound": 11
+      },
+      {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -600
+        },
+        "range": 290,
+        "fireRate": 1.4,
+        "damagePerRound": 11
+      },
+      {
+        "position": {
+          "x": 250,
+          "y": 0,
+          "z": -560
+        },
+        "range": 270,
+        "fireRate": 1.2,
+        "damagePerRound": 10
+      },
+      {
+        "position": {
+          "x": -250,
+          "y": 0,
+          "z": -540
+        },
+        "range": 270,
+        "fireRate": 1.2,
+        "damagePerRound": 10
+      },
+      {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -420
+        },
+        "range": 270,
+        "fireRate": 1.1,
+        "damagePerRound": 10
+      },
+      {
+        "position": {
+          "x": 300,
+          "y": 0,
+          "z": -650
+        },
+        "range": 260,
+        "fireRate": 1.0,
+        "damagePerRound": 9
+      },
+      {
+        "position": {
+          "x": -300,
+          "y": 0,
+          "z": -630
+        },
+        "range": 260,
+        "fireRate": 1.0,
+        "damagePerRound": 9
+      }
+    ]
+  },
+  {
+    "id": "philippine_sea_final",
+    "title": "Philippine Sea — The Last Sortie",
+    "subtitle": "There is nothing left to intercept. Fly anyway.",
+    "briefing": "The Philippine Sea in late 1944. Allied dominance is absolute. The remaining aircraft are not being sent because the mission is possible — they are being sent because the orders have not stopped.",
+    "debrief": "The war ended. The Pacific forgot very little. This mission does not conclude with a victory screen.",
+    "recommendedAircraftID": "f6f_hellcat",
+    "missionDuration": 240,
+    "archiveRewardID": "postwar_memory",
+    "aircraftRewardID": null,
+    "weatherProfileID": "late_war_squall",
+    "environmentTone": "lateWar",
+    "upgradeRewardID": null,
+    "objectives": [
+      {
+        "type": "survive",
+        "seconds": 180
+      }
+    ],
+    "playerSpawn": {
+      "id": "player",
+      "aircraftID": "f6f_hellcat",
+      "team": "player",
+      "position": {
+        "x": 0,
+        "y": 40,
+        "z": 0
+      },
+      "heading": 0,
+      "pitch": 0,
+      "cinematicIntroDelay": 0,
+      "aiRole": "intercept"
+    },
+    "enemySpawns": [
+      {
+        "id": "remnant_a",
+        "aircraftID": "ki84_hayate",
+        "team": "enemy",
+        "position": {
+          "x": -100,
+          "y": 50,
+          "z": -320
+        },
+        "heading": 0.3,
+        "pitch": 0,
+        "cinematicIntroDelay": 8,
+        "aiRole": "intercept"
+      },
+      {
+        "id": "remnant_b",
+        "aircraftID": "a6m_zero",
+        "team": "enemy",
+        "position": {
+          "x": 80,
+          "y": 46,
+          "z": -360
+        },
+        "heading": -0.2,
+        "pitch": 0,
+        "cinematicIntroDelay": 14,
+        "aiRole": "intercept"
+      }
+    ],
+    "cinematicBeats": [
+      {
+        "id": "last_sortie_launch",
+        "triggerTime": 1,
+        "title": "The Last Sortie",
+        "body": "There is no fleet to protect. There is no strategic objective left. The orders arrived and the engine started."
+      },
+      {
+        "id": "final_contact",
+        "triggerTime": 20,
+        "title": "Final Contact",
+        "body": "Two aircraft. Late-war. Flying on doctrine and inertia."
+      },
+      {
+        "id": "water_below",
+        "triggerTime": 60,
+        "title": "The Water Below",
+        "body": "The Pacific is indifferent to all of this."
+      },
+      {
+        "id": "memorial_moment",
+        "triggerTime": 120,
+        "title": "Memorial Moment",
+        "body": "Every name on the wall was once a person watching this same water, wondering the same thing."
+      },
+      {
+        "id": "last_transmission",
+        "triggerTime": 170,
+        "title": "Last Transmission",
+        "body": "Static. Then quiet. The mission clock continues to count."
+      }
+    ],
+    "navalAAEmitters": [
+      {
+        "position": {
+          "x": 200,
+          "y": 0,
+          "z": -500
+        },
+        "range": 260,
+        "fireRate": 0.7,
+        "damagePerRound": 7
+      },
+      {
+        "position": {
+          "x": -200,
+          "y": 0,
+          "z": -480
+        },
+        "range": 260,
+        "fireRate": 0.7,
+        "damagePerRound": 7
+      }
     ]
   }
 ]

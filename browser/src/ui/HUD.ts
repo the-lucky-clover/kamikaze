@@ -1,0 +1,74 @@
+import { CombatEvent, MissionOutcome, MissionSnapshot } from '../core/types'
+
+export class HUD {
+  private root = document.createElement('div')
+  private stats = document.createElement('div')
+  private cinematic = document.createElement('div')
+  private objectives = document.createElement('div')
+  private outcome = document.createElement('div')
+  private tactical = document.createElement('canvas')
+  private typingTimer: number | undefined
+
+  constructor(host: HTMLElement) {
+    Object.assign(this.root.style, { position: 'absolute', inset: '0', pointerEvents: 'none', color: '#fff', padding: '16px' })
+    Object.assign(this.stats.style, { position: 'absolute', left: '16px', top: '16px', background: 'rgba(0,0,0,0.5)', padding: '12px', borderRadius: '12px' })
+    Object.assign(this.cinematic.style, { position: 'absolute', top: '64px', left: '50%', transform: 'translateX(-50%)', maxWidth: '560px', background: 'rgba(0,0,0,0.45)', padding: '12px 16px', borderRadius: '16px', textAlign: 'center' })
+    Object.assign(this.objectives.style, { position: 'absolute', left: '16px', bottom: '16px', background: 'rgba(0,0,0,0.5)', padding: '12px', borderRadius: '12px' })
+    Object.assign(this.outcome.style, { position: 'absolute', inset: '0', display: 'none', placeItems: 'center', fontSize: '32px', fontWeight: '700', background: 'rgba(0,0,0,0.55)' })
+    Object.assign(this.tactical.style, { position: 'absolute', right: '16px', bottom: '16px', width: '180px', height: '180px', background: 'rgba(3,12,10,0.82)', borderRadius: '16px' })
+    this.tactical.width = 180
+    this.tactical.height = 180
+    this.root.append(this.stats, this.cinematic, this.objectives, this.outcome, this.tactical)
+    host.appendChild(this.root)
+  }
+
+  update(snapshot: MissionSnapshot, stormIntensity: number): void {
+    this.stats.innerHTML = `Integrity ${Math.round(snapshot.player.health)}<br>Ammo ${snapshot.player.ammo}<br>Altitude ${Math.round(snapshot.player.position.y)}m<br>Fuel ${Math.round(snapshot.player.fuelRemaining)}%`
+    this.objectives.innerHTML = snapshot.objectiveSummary.join('<br>')
+    this.outcome.style.display = snapshot.outcome === 'inProgress' ? 'none' : 'grid'
+    this.outcome.textContent = snapshot.outcome === 'success' ? 'MISSION COMPLETE' : 'MISSION LOST'
+    this.drawTactical(snapshot, stormIntensity)
+  }
+
+  showEvent(event: CombatEvent): void {
+    if (event.kind === 'cinematicBeat') this.typewrite(`<strong>${event.title}</strong><br>${event.body}`)
+  }
+
+  private typewrite(html: string): void {
+    window.clearInterval(this.typingTimer)
+    this.cinematic.textContent = ''
+    const text = html.replace(/<br>/g, '\n').replace(/<[^>]+>/g, '')
+    let index = 0
+    this.typingTimer = window.setInterval(() => {
+      this.cinematic.textContent = text.slice(0, index)
+      index += 1
+      if (index > text.length) window.clearInterval(this.typingTimer)
+    }, 40)
+  }
+
+  private drawTactical(snapshot: MissionSnapshot, stormIntensity: number): void {
+    const context = this.tactical.getContext('2d')!
+    context.clearRect(0, 0, this.tactical.width, this.tactical.height)
+    context.strokeStyle = 'rgba(80,255,120,0.6)'
+    context.beginPath()
+    context.arc(90, 90, 78, 0, Math.PI * 2)
+    context.stroke()
+    const altitudeHeight = Math.max(0, Math.min(0.95, snapshot.player.position.y / 200)) * this.tactical.height
+    context.fillStyle = '#62ff8a'
+    context.fillRect(8, this.tactical.height - altitudeHeight - 8, 6, altitudeHeight)
+    context.fillStyle = `rgba(255,165,0,${0.2 + stormIntensity * 0.6})`
+    context.beginPath()
+    context.arc(162, 18, 6, 0, Math.PI * 2)
+    context.fill()
+    context.fillStyle = '#62ff8a'
+    context.beginPath()
+    context.arc(90, 90, 4, 0, Math.PI * 2)
+    context.fill()
+    context.fillStyle = '#ff6161'
+    snapshot.enemies.filter((enemy) => enemy.health > 0).forEach((enemy) => {
+      const offsetX = Math.max(-60, Math.min(60, enemy.position.x - snapshot.player.position.x))
+      const offsetY = Math.max(-60, Math.min(60, enemy.position.z - snapshot.player.position.z))
+      context.fillRect(90 + offsetX - 3, 90 + offsetY - 3, 6, 6)
+    })
+  }
+}

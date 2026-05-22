@@ -24,8 +24,23 @@ struct KamikazeGameTests {
         let aircraft = ContentLibrary.aircraft.first(where: { $0.id == mission.recommendedAircraftID })!
         var simulation = GameSimulation(mission: mission, selectedAircraft: aircraft)
 
-        for _ in 0..<240 where simulation.outcome == .inProgress {
-            simulation.advance(playerInput: PilotInput(throttle: 0.15, pitch: 0, yaw: 0, firing: true), deltaTime: 1)
+        for _ in 0..<960 where simulation.outcome == .inProgress {
+            let liveEnemies = simulation.snapshot.enemies.filter { $0.isAlive && $0.isActive }
+            let yawInput: Double
+            let pitchInput: Double
+            if let target = liveEnemies.min(by: {
+                ($0.position - simulation.player.position).length < ($1.position - simulation.player.position).length
+            }) {
+                let offset = target.position - simulation.player.position
+                let desiredHeading = atan2(offset.x, -offset.z)
+                let desiredPitch = asin(clamp(offset.normalized.y, lower: -1.0, upper: 1.0))
+                yawInput = clamp(desiredHeading - simulation.player.heading, lower: -1.0, upper: 1.0)
+                pitchInput = clamp((desiredPitch - simulation.player.pitch) * 2, lower: -1.0, upper: 1.0)
+            } else {
+                yawInput = 0
+                pitchInput = 0
+            }
+            simulation.advance(playerInput: PilotInput(throttle: 0.15, pitch: pitchInput, yaw: yawInput, firing: true), deltaTime: 0.25)
         }
 
         #expect(simulation.outcome == .success)
@@ -79,6 +94,10 @@ struct KamikazeGameTests {
             [AircraftBlueprint].self,
             from: Data(contentsOf: root.appending(path: "gameplay/aircraft.json"))
         )
+        let upgrades = try decoder.decode(
+            [UpgradeDefinition].self,
+            from: Data(contentsOf: root.appending(path: "gameplay/upgrades.json"))
+        )
         let missions = try decoder.decode(
             [MissionDefinition].self,
             from: Data(contentsOf: root.appending(path: "missions/missions.json"))
@@ -93,6 +112,7 @@ struct KamikazeGameTests {
         )
 
         #expect(aircraft == ContentLibrary.aircraft)
+        #expect(upgrades == ContentLibrary.upgrades)
         #expect(missions == ContentLibrary.missions)
         #expect(archive == ContentLibrary.archive)
         #expect(weather == ContentLibrary.weather)
