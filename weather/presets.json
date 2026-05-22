@@ -28,5 +28,25 @@
     "cloudDensity": 1.0,
     "oceanRoughness": 1.0,
     "antiAircraftPressure": 0.9
+  },
+  {
+    "id": "moonlit_pacific",
+    "displayName": "Moonlit Pacific",
+    "visibility": 0.55,
+    "windIntensity": 0.3,
+    "stormIntensity": 0.15,
+    "cloudDensity": 0.25,
+    "oceanRoughness": 0.35,
+    "antiAircraftPressure": 0.6
+  },
+  {
+    "id": "iwo_jima_volcanic_haze",
+    "displayName": "Iwo Jima Volcanic Haze",
+    "visibility": 0.48,
+    "windIntensity": 0.55,
+    "stormIntensity": 0.45,
+    "cloudDensity": 0.65,
+    "oceanRoughness": 0.5,
+    "antiAircraftPressure": 0.78
   }
 ]

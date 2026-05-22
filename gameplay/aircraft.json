@@ -34,5 +34,41 @@
     "durability": 100,
     "armament": { "ammoCapacity": 420, "fireCooldown": 0.14, "damagePerHit": 16, "effectiveRange": 230 },
     "unlockedByDefault": false
+  },
+  {
+    "id": "f6f_hellcat",
+    "displayName": "F6F Hellcat",
+    "cruiseSpeed": 105,
+    "maxSpeed": 180,
+    "throttleResponse": 1.0,
+    "turnRate": 0.72,
+    "climbRate": 24,
+    "durability": 140,
+    "armament": { "ammoCapacity": 600, "fireCooldown": 0.12, "damagePerHit": 20, "effectiveRange": 260 },
+    "unlockedByDefault": false
+  },
+  {
+    "id": "d4y_suisei",
+    "displayName": "D4Y Suisei",
+    "cruiseSpeed": 86,
+    "maxSpeed": 152,
+    "throttleResponse": 0.8,
+    "turnRate": 0.58,
+    "climbRate": 20,
+    "durability": 130,
+    "armament": { "ammoCapacity": 500, "fireCooldown": 0.16, "damagePerHit": 24, "effectiveRange": 210 },
+    "unlockedByDefault": false
+  },
+  {
+    "id": "n1k2_shiden_kai",
+    "displayName": "N1K2 Shiden-Kai",
+    "cruiseSpeed": 94,
+    "maxSpeed": 172,
+    "throttleResponse": 0.98,
+    "turnRate": 0.88,
+    "climbRate": 24,
+    "durability": 108,
+    "armament": { "ammoCapacity": 400, "fireCooldown": 0.13, "damagePerHit": 18, "effectiveRange": 235 },
+    "unlockedByDefault": false
   }
 ]

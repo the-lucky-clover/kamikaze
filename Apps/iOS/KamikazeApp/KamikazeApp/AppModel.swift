@@ -20,6 +20,7 @@ enum AppScreen {
     case studioIntro
     case attractMode
     case menu
+    case missionSelect
     case briefing
     case flight
     case debrief
@@ -78,7 +79,27 @@ final class AppModel: ObservableObject {
         catalog.archive.filter { progression.unlockedArchiveEntryIDs.contains($0.id) }
     }
 
+    var availableMissions: [MissionDefinition] {
+        let completedIDs = Set(progression.completedMissionIDs)
+        var result: [MissionDefinition] = []
+        for (index, mission) in catalog.missions.enumerated() {
+            if index == 0 || completedIDs.contains(catalog.missions[index - 1].id) {
+                result.append(mission)
+            }
+        }
+        return result
+    }
+
     func showBriefing() {
+        performTransition(to: .briefing)
+    }
+
+    func showMissionSelect() {
+        performTransition(to: .missionSelect)
+    }
+
+    func selectMission(_ missionID: String) {
+        selectedMissionID = missionID
         performTransition(to: .briefing)
     }
 
@@ -187,6 +208,7 @@ final class FlightSession: ObservableObject {
     private var timer: Timer?
     private let settings: PlayerSettings
     private let audioDirector: AudioDirector
+    private let weatherSeverity: Double
     private let onComplete: (MissionOutcome) -> Void
 
     init(
@@ -201,8 +223,15 @@ final class FlightSession: ObservableObject {
         self.settings = settings
         self.audioDirector = audioDirector
         self.onComplete = onComplete
+        let weather = mission.weatherProfileID.flatMap { id in
+            ContentLibrary.weather.first(where: { $0.id == id })
+        }
+        weatherSeverity = weather?.stormIntensity ?? 0.5
         simulation = GameSimulation(mission: mission, selectedAircraft: selectedAircraft, aircraftCatalog: aircraftCatalog)
         snapshot = simulation.snapshot
+        if let weather {
+            renderer.configure(weather: weather)
+        }
         renderer.update(with: snapshot)
     }
 
@@ -239,7 +268,7 @@ final class FlightSession: ObservableObject {
         audioDirector.updateDynamicMix(
             altitude: snapshot.player.position.y,
             combatIntensity: min(1, Double(snapshot.events.count) / 4),
-            weatherSeverity: 0.72,
+            weatherSeverity: weatherSeverity,
             fleetProximity: max(0, 1 - (snapshot.player.position.length / 1_200))
         )
         if snapshot.outcome != .inProgress {

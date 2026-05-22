@@ -17,6 +17,8 @@ struct RootView: View {
                 AttractModeView()
             case .menu:
                 MainMenuView()
+            case .missionSelect:
+                MissionSelectView()
             case .briefing:
                 BriefingView()
             case .flight:
@@ -129,9 +131,9 @@ struct MainMenuView: View {
                 .foregroundStyle(Color(red: 0.93, green: 0.82, blue: 0.68))
                 .frame(maxWidth: 540, alignment: .leading)
             VStack(spacing: 12) {
-                MenuButton(title: "Mission Briefing", subtitle: model.selectedMission.title) {
+                MenuButton(title: "Missions", subtitle: "\(model.availableMissions.count) sortie\(model.availableMissions.count == 1 ? "" : "s") available") {
                     model.audioDirector.playEffect(.confirm)
-                    model.showBriefing()
+                    model.showMissionSelect()
                 }
                 MenuButton(title: "Hangar", subtitle: model.selectedAircraft.displayName) {
                     model.showHangar()
@@ -153,6 +155,76 @@ struct MainMenuView: View {
             withAnimation(.spring(response: 0.75, dampingFraction: 0.8)) {
                 animateIn = true
             }
+        }
+    }
+}
+
+struct MissionSelectView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Select Sortie")
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(.white)
+                Text("Missions unlock in campaign order. Each completed sortie opens an archive entry and a new aircraft.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.white.opacity(0.7))
+                    .frame(maxWidth: 540, alignment: .leading)
+
+                ForEach(model.availableMissions) { mission in
+                    Button {
+                        model.audioDirector.playEffect(.confirm)
+                        model.selectMission(mission.id)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack(alignment: .top) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(mission.title)
+                                        .font(.headline)
+                                    Text(mission.subtitle)
+                                        .font(.subheadline)
+                                        .foregroundStyle(Color(red: 0.92, green: 0.83, blue: 0.7))
+                                }
+                                Spacer()
+                                if model.progression.completedMissionIDs.contains(mission.id) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(Color(red: 0.5, green: 0.85, blue: 0.6))
+                                }
+                            }
+                            Text(mission.briefing)
+                                .font(.caption)
+                                .foregroundStyle(Color.white.opacity(0.65))
+                                .lineLimit(2)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundStyle(.white)
+                        .background(
+                            model.selectedMissionID == mission.id
+                                ? Color.white.opacity(0.13)
+                                : Color.white.opacity(0.06),
+                            in: RoundedRectangle(cornerRadius: 18)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 18)
+                                .stroke(
+                                    model.selectedMissionID == mission.id
+                                        ? Color(red: 0.93, green: 0.82, blue: 0.68).opacity(0.7)
+                                        : Color.clear,
+                                    lineWidth: 1.5
+                                )
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                SecondaryButton(title: "Back") {
+                    model.showMenu()
+                }
+            }
+            .padding(28)
         }
     }
 }
@@ -190,16 +262,8 @@ struct BriefingView: View {
                     model.startMission()
                 }
                 SecondaryButton(title: "Back") {
-                    model.showMenu()
+                    model.showMissionSelect()
                 }
-            }
-            Spacer()
-        }
-        .padding(28)
-    }
-}
-
-struct FlightView: View {
     @EnvironmentObject private var model: AppModel
 
     var body: some View {
