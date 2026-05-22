@@ -1,0 +1,15 @@
+{
+  "style": "realistic_but_cinematic_with_restrained_saturation_and_filmic_contrast",
+  "categories": [
+    "aircraft_hulls",
+    "carrier_decks",
+    "naval_aa_guns",
+    "weathered_runways",
+    "pacific_water_normals",
+    "cockpit_gauges",
+    "analog_instruments",
+    "pilot_uniforms"
+  ],
+  "surface_storytelling": ["scratched paint", "oxidized steel", "worn cockpit interiors", "salt corrosion", "oil stains"],
+  "requirements": ["mipmapping", "compression", "lod_transitions", "pbr_workflows"]
+}

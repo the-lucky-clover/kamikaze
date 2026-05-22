@@ -1,0 +1,15 @@
+{
+  "progression": [
+    "completedMissionIDs",
+    "unlockedAircraftIDs",
+    "unlockedArchiveEntryIDs",
+    "selectedAircraftID",
+    "settings"
+  ],
+  "settings": [
+    "musicVolume",
+    "effectsVolume",
+    "subtitlesEnabled",
+    "invertedPitch"
+  ]
+}

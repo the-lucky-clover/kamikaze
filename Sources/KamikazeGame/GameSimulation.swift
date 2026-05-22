@@ -25,6 +25,8 @@ public struct CombatantState: Sendable, Equatable, Identifiable {
     public var throttle: Double
     public var health: Double
     public var ammo: Int
+    public var fuelRemaining: Double
+    public var damageState: DamageState
     public var weaponCooldownRemaining: Double
     public var isPlayer: Bool
     public var isActive: Bool
@@ -39,6 +41,8 @@ public struct CombatantState: Sendable, Equatable, Identifiable {
         throttle = 0.65
         health = aircraft.durability
         ammo = aircraft.armament.ammoCapacity
+        fuelRemaining = 240
+        damageState = .pristine
         weaponCooldownRemaining = 0
         self.isPlayer = isPlayer
         isActive = spawn.cinematicIntroDelay == 0
@@ -49,7 +53,9 @@ public struct CombatantState: Sendable, Equatable, Identifiable {
     }
 
     public var speed: Double {
-        aircraft.cruiseSpeed + ((aircraft.maxSpeed - aircraft.cruiseSpeed) * throttle)
+        let engineFactor = max(0.22, 1 - (damageState.engineLoss * 0.72))
+        let fuelFactor = fuelRemaining <= 0 ? 0.2 : 1
+        return (aircraft.cruiseSpeed + ((aircraft.maxSpeed - aircraft.cruiseSpeed) * throttle)) * engineFactor * fuelFactor
     }
 
     public var forward: Vector3 {
@@ -183,11 +189,18 @@ public struct GameSimulation: Sendable {
             lower: 0.2,
             upper: 1.0
         )
-        let pitchModifier = input.pitch * combatants[playerIndex].aircraft.climbRate * 0.01 * deltaTime
+        let steeringAuthority = max(0.15, 1 - (combatants[playerIndex].damageState.steeringLoss * 0.75))
+        let divePenalty = combatants[playerIndex].pitch < -0.2 ? 0.6 : 1
+        let pitchModifier = input.pitch * combatants[playerIndex].aircraft.climbRate * 0.01 * steeringAuthority * divePenalty * deltaTime
         combatants[playerIndex].pitch = clamp(combatants[playerIndex].pitch + pitchModifier, lower: -0.6, upper: 0.65)
-        combatants[playerIndex].heading += input.yaw * combatants[playerIndex].aircraft.turnRate * deltaTime
+        let instabilityDrift = sin(missionTime * 1.35) * combatants[playerIndex].damageState.stabilityLoss * 0.08
+        combatants[playerIndex].heading += (input.yaw * combatants[playerIndex].aircraft.turnRate * steeringAuthority * deltaTime) + (instabilityDrift * deltaTime)
         combatants[playerIndex].position = combatants[playerIndex].position + (combatants[playerIndex].forward * combatants[playerIndex].speed * deltaTime)
         combatants[playerIndex].position.y = max(4, combatants[playerIndex].position.y)
+        combatants[playerIndex].fuelRemaining = max(
+            0,
+            combatants[playerIndex].fuelRemaining - ((0.55 + combatants[playerIndex].throttle + (combatants[playerIndex].damageState.fuelLeak * 2.2)) * deltaTime)
+        )
         combatants[playerIndex].weaponCooldownRemaining = max(0, combatants[playerIndex].weaponCooldownRemaining - deltaTime)
     }
 
@@ -202,6 +215,10 @@ public struct GameSimulation: Sendable {
             combatants[index].throttle = clamp(combatants[index].throttle + (0.1 * deltaTime), lower: 0.5, upper: 1)
             combatants[index].position = combatants[index].position + (combatants[index].forward * combatants[index].speed * deltaTime)
             combatants[index].position.y = max(6, combatants[index].position.y)
+            combatants[index].fuelRemaining = max(
+                0,
+                combatants[index].fuelRemaining - ((0.45 + combatants[index].throttle + (combatants[index].damageState.fuelLeak * 1.6)) * deltaTime)
+            )
             combatants[index].weaponCooldownRemaining = max(0, combatants[index].weaponCooldownRemaining - deltaTime)
         }
     }
@@ -231,7 +248,8 @@ public struct GameSimulation: Sendable {
         combatants[attackerIndex].weaponCooldownRemaining = combatants[attackerIndex].aircraft.armament.fireCooldown
         let direction = (combatants[targetIndex].position - combatants[attackerIndex].position).normalized
         events.append(CombatEvent(time: missionTime, kind: .shotFired(origin: combatants[attackerIndex].position, direction: direction)))
-        applyDamage(to: targetIndex, amount: combatants[attackerIndex].aircraft.armament.damagePerHit)
+        let damageMultiplier = combatants[attackerIndex].isPlayer ? 1.35 : 1
+        applyDamage(to: targetIndex, amount: combatants[attackerIndex].aircraft.armament.damagePerHit * damageMultiplier)
     }
 
     private func bestTarget(for attackerIndex: Int, candidates: [Int]) -> Int? {
@@ -265,14 +283,24 @@ public struct GameSimulation: Sendable {
 
     private mutating func applyDamage(to targetIndex: Int, amount: Double) {
         combatants[targetIndex].health = max(0, combatants[targetIndex].health - amount)
+        combatants[targetIndex].damageState.applyHit(normalizedSeverity: amount / max(combatants[targetIndex].aircraft.durability, 1))
         events.append(CombatEvent(time: missionTime, kind: .hit(targetID: combatants[targetIndex].id)))
         if !combatants[targetIndex].isAlive {
             events.append(CombatEvent(time: missionTime, kind: .destroyed(targetID: combatants[targetIndex].id)))
         }
     }
 
+    mutating func debugApplyDamage(toCombatantID id: String, amount: Double) {
+        guard let targetIndex = combatants.firstIndex(where: { $0.id == id }) else { return }
+        applyDamage(to: targetIndex, amount: amount)
+    }
+
     private mutating func evaluateMissionOutcome() {
         if !player.isAlive {
+            outcome = .failure
+            return
+        }
+        if player.fuelRemaining <= 0 && player.position.y < 8 {
             outcome = .failure
             return
         }

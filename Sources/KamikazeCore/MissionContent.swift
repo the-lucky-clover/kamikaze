@@ -197,6 +197,29 @@ public struct ArchiveEntry: Codable, Sendable, Equatable, Identifiable {
 }
 
 public enum ContentLibrary {
+    public static let weather: [WeatherProfile] = [
+        WeatherProfile(
+            id: "golden_pacific",
+            displayName: "Golden Pacific",
+            visibility: 0.9,
+            windIntensity: 0.2,
+            stormIntensity: 0.1,
+            cloudDensity: 0.3,
+            oceanRoughness: 0.22,
+            antiAircraftPressure: 0.35
+        ),
+        WeatherProfile(
+            id: "late_war_squall",
+            displayName: "Late-War Squall",
+            visibility: 0.42,
+            windIntensity: 0.75,
+            stormIntensity: 0.84,
+            cloudDensity: 0.9,
+            oceanRoughness: 0.8,
+            antiAircraftPressure: 0.82
+        )
+    ]
+
     public static let aircraft: [AircraftBlueprint] = [
         AircraftBlueprint(
             id: "f4f_wildcat",

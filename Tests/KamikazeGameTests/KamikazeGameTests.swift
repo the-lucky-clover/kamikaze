@@ -44,6 +44,23 @@ struct KamikazeGameTests {
         #expect(director.progression.unlockedAircraftIDs.contains(mission.aircraftRewardID!))
     }
 
+    @Test("damage degrades engine, fuel, and handling")
+    func damageDegradesFlight() {
+        let mission = ContentLibrary.missions[0]
+        let aircraft = ContentLibrary.aircraft.first(where: { $0.id == mission.recommendedAircraftID })!
+        var simulation = GameSimulation(mission: mission, selectedAircraft: aircraft)
+        let baselineSpeed = simulation.player.speed
+        let baselineFuel = simulation.player.fuelRemaining
+
+        simulation.debugApplyDamage(toCombatantID: "player", amount: 40)
+        simulation.advance(playerInput: PilotInput(throttle: 0.4, pitch: 1, yaw: 1), deltaTime: 1)
+
+        #expect(simulation.player.damageState.engineLoss > 0)
+        #expect(simulation.player.damageState.stabilityLoss > 0)
+        #expect(simulation.player.fuelRemaining < baselineFuel)
+        #expect(simulation.player.speed < baselineSpeed)
+    }
+
     @Test("mission content is codable for JSON pipelines")
     func missionContentRoundTrips() throws {
         let mission = ContentLibrary.missions[0]

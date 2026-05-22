@@ -1,0 +1,19 @@
+{
+  "naval_ai": [
+    "coordinated_aa_fire",
+    "interception_tactics",
+    "radar_detection",
+    "smoke_deployment",
+    "combat_air_patrols",
+    "formation_changes",
+    "evasive_maneuvers"
+  ],
+  "aircraft_ai": [
+    "escorts",
+    "interceptors",
+    "damaged_aircraft_behaviors",
+    "morale_based_retreat_systems"
+  ],
+  "reactive_inputs": ["weather", "visibility", "altitude", "fleet_losses", "fuel_shortages"],
+  "boss_formations": ["carrier_groups", "battleship_task_forces", "radar_pickets", "night_interception_fleets"]
+}

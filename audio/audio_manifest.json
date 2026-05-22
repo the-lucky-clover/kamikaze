@@ -1,0 +1,24 @@
+{
+  "music_direction": [
+    "taiko percussion",
+    "orchestral drones",
+    "naval drums",
+    "low brass tension",
+    "analog radio static",
+    "sparse piano motifs"
+  ],
+  "combat_music": [
+    "escalating percussion",
+    "distorted strings",
+    "industrial metallic impacts"
+  ],
+  "ambience": [
+    "ocean wind",
+    "aircraft creaks",
+    "rain",
+    "cockpit vibration",
+    "distant artillery",
+    "muffled underwater crash audio"
+  ],
+  "dynamic_mix_inputs": ["altitude", "combat_intensity", "weather", "proximity_to_fleet"]
+}

@@ -1,0 +1,304 @@
+// !$*UTF8*$!
+{
+archiveVersion = 1;
+classes = {
+};
+objectVersion = 56;
+objects = {
+
+/* Begin PBXBuildFile section */
+A10000000000000000000001 /* KamikazeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000001 /* KamikazeApp.swift */; };
+A10000000000000000000002 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* AppModel.swift */; };
+A10000000000000000000003 /* AudioDirector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000003 /* AudioDirector.swift */; };
+A10000000000000000000004 /* FlightSceneRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* FlightSceneRenderer.swift */; };
+A10000000000000000000005 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000005 /* Views.swift */; };
+A10000000000000000000006 /* aircraft.json in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* aircraft.json */; };
+A10000000000000000000007 /* missions.json in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000007 /* missions.json */; };
+A10000000000000000000008 /* archive.json in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* archive.json */; };
+A10000000000000000000009 /* ocean.shader in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000009 /* ocean.shader */; };
+A1000000000000000000000A /* sky.shader in Resources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000A /* sky.shader */; };
+A1000000000000000000000B /* clouds.shader in Resources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000B /* clouds.shader */; };
+A1000000000000000000000C /* en.json in Resources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000C /* en.json */; };
+A1000000000000000000000D /* Kamikaze in Frameworks */ = {isa = PBXBuildFile; productRef = D10000000000000000000001 /* Kamikaze */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+B10000000000000000000000 /* KamikazeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KamikazeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+B10000000000000000000001 /* KamikazeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KamikazeApp.swift; sourceTree = "<group>"; };
+B10000000000000000000002 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+B10000000000000000000003 /* AudioDirector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDirector.swift; sourceTree = "<group>"; };
+B10000000000000000000004 /* FlightSceneRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightSceneRenderer.swift; sourceTree = "<group>"; };
+B10000000000000000000005 /* Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
+B10000000000000000000006 /* aircraft.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = aircraft.json; path = ../../gameplay/aircraft.json; sourceTree = SOURCE_ROOT; };
+B10000000000000000000007 /* missions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = missions.json; path = ../../missions/missions.json; sourceTree = SOURCE_ROOT; };
+B10000000000000000000008 /* archive.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = archive.json; path = ../../historical_data/archive.json; sourceTree = SOURCE_ROOT; };
+B10000000000000000000009 /* ocean.shader */ = {isa = PBXFileReference; lastKnownFileType = text; name = ocean.shader; path = ../../shaders/ocean.shader; sourceTree = SOURCE_ROOT; };
+B1000000000000000000000A /* sky.shader */ = {isa = PBXFileReference; lastKnownFileType = text; name = sky.shader; path = ../../shaders/sky.shader; sourceTree = SOURCE_ROOT; };
+B1000000000000000000000B /* clouds.shader */ = {isa = PBXFileReference; lastKnownFileType = text; name = clouds.shader; path = ../../shaders/clouds.shader; sourceTree = SOURCE_ROOT; };
+B1000000000000000000000C /* en.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en.json; path = ../../localization/en.json; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+C10000000000000000000001 /* Frameworks */ = {
+isa = PBXFrameworksBuildPhase;
+buildActionMask = 2147483647;
+files = (
+A1000000000000000000000D /* Kamikaze in Frameworks */,
+);
+runOnlyForDeploymentPostprocessing = 0;
+};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+E10000000000000000000001 = {
+isa = PBXGroup;
+children = (
+E10000000000000000000002 /* KamikazeApp */,
+E10000000000000000000003 /* Resources */,
+E10000000000000000000004 /* Products */,
+);
+sourceTree = "<group>";
+};
+E10000000000000000000002 /* KamikazeApp */ = {
+isa = PBXGroup;
+path = KamikazeApp/KamikazeApp;
+sourceTree = SOURCE_ROOT;
+children = (
+B10000000000000000000001 /* KamikazeApp.swift */,
+B10000000000000000000002 /* AppModel.swift */,
+B10000000000000000000003 /* AudioDirector.swift */,
+B10000000000000000000004 /* FlightSceneRenderer.swift */,
+B10000000000000000000005 /* Views.swift */,
+);
+};
+E10000000000000000000003 /* Resources */ = {
+isa = PBXGroup;
+children = (
+B10000000000000000000006 /* aircraft.json */,
+B10000000000000000000007 /* missions.json */,
+B10000000000000000000008 /* archive.json */,
+B10000000000000000000009 /* ocean.shader */,
+B1000000000000000000000A /* sky.shader */,
+B1000000000000000000000B /* clouds.shader */,
+B1000000000000000000000C /* en.json */,
+);
+sourceTree = "<group>";
+};
+E10000000000000000000004 /* Products */ = {
+isa = PBXGroup;
+children = (
+B10000000000000000000000 /* KamikazeApp.app */,
+);
+name = Products;
+sourceTree = "<group>";
+};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+F10000000000000000000001 /* KamikazeApp */ = {
+isa = PBXNativeTarget;
+buildConfigurationList = F10000000000000000000007 /* Build configuration list for PBXNativeTarget "KamikazeApp" */;
+buildPhases = (
+F10000000000000000000002 /* Sources */,
+C10000000000000000000001 /* Frameworks */,
+F10000000000000000000003 /* Resources */,
+);
+buildRules = (
+);
+dependencies = (
+);
+name = KamikazeApp;
+packageProductDependencies = (
+D10000000000000000000001 /* Kamikaze */,
+);
+productName = KamikazeApp;
+productReference = B10000000000000000000000 /* KamikazeApp.app */;
+productType = "com.apple.product-type.application";
+};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+F10000000000000000000000 /* Project object */ = {
+isa = PBXProject;
+attributes = {
+BuildIndependentTargetsInParallel = 1;
+LastSwiftUpdateCheck = 1600;
+LastUpgradeCheck = 1600;
+TargetAttributes = {
+F10000000000000000000001 = {
+CreatedOnToolsVersion = 16.0;
+};
+};
+};
+buildConfigurationList = F10000000000000000000004 /* Build configuration list for PBXProject "KamikazeApp" */;
+compatibilityVersion = "Xcode 15.0";
+developmentRegion = en;
+hasScannedForEncodings = 0;
+knownRegions = (
+en,
+Base,
+);
+mainGroup = E10000000000000000000001;
+packageReferences = (
+D10000000000000000000000 /* XCLocalSwiftPackageReference "../.." */,
+);
+productRefGroup = E10000000000000000000004 /* Products */;
+projectDirPath = "";
+projectRoot = "";
+targets = (
+F10000000000000000000001 /* KamikazeApp */,
+);
+};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+F10000000000000000000003 /* Resources */ = {
+isa = PBXResourcesBuildPhase;
+buildActionMask = 2147483647;
+files = (
+A10000000000000000000006 /* aircraft.json in Resources */,
+A10000000000000000000007 /* missions.json in Resources */,
+A10000000000000000000008 /* archive.json in Resources */,
+A10000000000000000000009 /* ocean.shader in Resources */,
+A1000000000000000000000A /* sky.shader in Resources */,
+A1000000000000000000000B /* clouds.shader in Resources */,
+A1000000000000000000000C /* en.json in Resources */,
+);
+runOnlyForDeploymentPostprocessing = 0;
+};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+F10000000000000000000002 /* Sources */ = {
+isa = PBXSourcesBuildPhase;
+buildActionMask = 2147483647;
+files = (
+A10000000000000000000001 /* KamikazeApp.swift in Sources */,
+A10000000000000000000002 /* AppModel.swift in Sources */,
+A10000000000000000000003 /* AudioDirector.swift in Sources */,
+A10000000000000000000004 /* FlightSceneRenderer.swift in Sources */,
+A10000000000000000000005 /* Views.swift in Sources */,
+);
+runOnlyForDeploymentPostprocessing = 0;
+};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+F10000000000000000000005 /* Debug */ = {
+isa = XCBuildConfiguration;
+buildSettings = {
+ALWAYS_SEARCH_USER_PATHS = NO;
+CLANG_ENABLE_MODULES = YES;
+COPY_PHASE_STRIP = NO;
+DEBUG_INFORMATION_FORMAT = dwarf;
+ENABLE_TESTABILITY = YES;
+GCC_C_LANGUAGE_STANDARD = gnu17;
+SWIFT_VERSION = 6.0;
+};
+name = Debug;
+};
+F10000000000000000000006 /* Release */ = {
+isa = XCBuildConfiguration;
+buildSettings = {
+ALWAYS_SEARCH_USER_PATHS = NO;
+CLANG_ENABLE_MODULES = YES;
+COPY_PHASE_STRIP = NO;
+DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+GCC_C_LANGUAGE_STANDARD = gnu17;
+SWIFT_VERSION = 6.0;
+};
+name = Release;
+};
+F10000000000000000000008 /* Debug */ = {
+isa = XCBuildConfiguration;
+buildSettings = {
+ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+CODE_SIGN_STYLE = Automatic;
+CURRENT_PROJECT_VERSION = 1;
+DEVELOPMENT_TEAM = "";
+GENERATE_INFOPLIST_FILE = YES;
+INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+LD_RUNPATH_SEARCH_PATHS = (
+"$(inherited)",
+"@executable_path/Frameworks",
+);
+MARKETING_VERSION = 1.0;
+PRODUCT_BUNDLE_IDENTIFIER = com.theluckyclover.kamikaze;
+PRODUCT_NAME = "$(TARGET_NAME)";
+SDKROOT = iphoneos;
+SWIFT_EMIT_LOC_STRINGS = YES;
+SWIFT_VERSION = 6.0;
+TARGETED_DEVICE_FAMILY = "1,2";
+};
+name = Debug;
+};
+F10000000000000000000009 /* Release */ = {
+isa = XCBuildConfiguration;
+buildSettings = {
+ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+CODE_SIGN_STYLE = Automatic;
+CURRENT_PROJECT_VERSION = 1;
+DEVELOPMENT_TEAM = "";
+GENERATE_INFOPLIST_FILE = YES;
+INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+LD_RUNPATH_SEARCH_PATHS = (
+"$(inherited)",
+"@executable_path/Frameworks",
+);
+MARKETING_VERSION = 1.0;
+PRODUCT_BUNDLE_IDENTIFIER = com.theluckyclover.kamikaze;
+PRODUCT_NAME = "$(TARGET_NAME)";
+SDKROOT = iphoneos;
+SWIFT_EMIT_LOC_STRINGS = YES;
+SWIFT_OPTIMIZATION_LEVEL = "-O";
+SWIFT_VERSION = 6.0;
+TARGETED_DEVICE_FAMILY = "1,2";
+};
+name = Release;
+};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+F10000000000000000000004 /* Build configuration list for PBXProject "KamikazeApp" */ = {
+isa = XCConfigurationList;
+buildConfigurations = (
+F10000000000000000000005 /* Debug */,
+F10000000000000000000006 /* Release */,
+);
+defaultConfigurationIsVisible = 0;
+defaultConfigurationName = Release;
+};
+F10000000000000000000007 /* Build configuration list for PBXNativeTarget "KamikazeApp" */ = {
+isa = XCConfigurationList;
+buildConfigurations = (
+F10000000000000000000008 /* Debug */,
+F10000000000000000000009 /* Release */,
+);
+defaultConfigurationIsVisible = 0;
+defaultConfigurationName = Release;
+};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+D10000000000000000000000 /* XCLocalSwiftPackageReference "../.." */ = {
+isa = XCLocalSwiftPackageReference;
+relativePath = ../..;
+};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+D10000000000000000000001 /* Kamikaze */ = {
+isa = XCSwiftPackageProductDependency;
+package = D10000000000000000000000 /* XCLocalSwiftPackageReference "../.." */;
+productName = Kamikaze;
+};
+/* End XCSwiftPackageProductDependency section */
+};
+rootObject = F10000000000000000000000 /* Project object */;
+}

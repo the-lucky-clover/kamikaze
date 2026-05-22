@@ -1,0 +1,32 @@
+[
+  {
+    "id": "golden_pacific",
+    "displayName": "Golden Pacific",
+    "visibility": 0.9,
+    "windIntensity": 0.2,
+    "stormIntensity": 0.1,
+    "cloudDensity": 0.3,
+    "oceanRoughness": 0.22,
+    "antiAircraftPressure": 0.35
+  },
+  {
+    "id": "late_war_squall",
+    "displayName": "Late-War Squall",
+    "visibility": 0.42,
+    "windIntensity": 0.75,
+    "stormIntensity": 0.84,
+    "cloudDensity": 0.9,
+    "oceanRoughness": 0.8,
+    "antiAircraftPressure": 0.82
+  },
+  {
+    "id": "typhoon_wall",
+    "displayName": "Typhoon Wall",
+    "visibility": 0.2,
+    "windIntensity": 0.95,
+    "stormIntensity": 1.0,
+    "cloudDensity": 1.0,
+    "oceanRoughness": 1.0,
+    "antiAircraftPressure": 0.9
+  }
+]

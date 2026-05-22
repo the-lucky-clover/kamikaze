@@ -1,0 +1,15 @@
+{
+  "locations": [
+    "Okinawa",
+    "Leyte Gulf",
+    "Iwo Jima",
+    "Philippine Sea",
+    "Kyushu",
+    "Formosa staging areas"
+  ],
+  "escalation": {
+    "earlyWar": "warm gold sunlight and tropical blue horizons",
+    "lateWar": "gray-green storms, ash skies, smoke-filled horizons, blood-orange sunsets"
+  },
+  "late_war_pressures": ["fuel shortages", "storm systems", "higher AA saturation", "lower visibility", "psychological collapse"]
+}

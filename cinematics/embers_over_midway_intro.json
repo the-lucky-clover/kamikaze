@@ -1,0 +1,12 @@
+{
+  "camera_modes": ["replay", "flyby", "cockpit", "carrier_tracking"],
+  "framing": ["procedural_cinematic_framing", "film_grain_overlay", "archival_color_grade"],
+  "beats": [
+    { "time": 0, "camera": "carrier_tracking", "title": "Deck Wake" },
+    { "time": 10, "camera": "cockpit", "title": "Transit" },
+    { "time": 28, "camera": "flyby", "title": "Intercept" }
+  ],
+  "replay_editor": {
+    "features": ["timeline_scrubbing", "camera_keyframes", "export_mode", "cinematic_slow_motion"]
+  }
+}

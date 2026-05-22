@@ -1,0 +1,38 @@
+[
+  {
+    "id": "f4f_wildcat",
+    "displayName": "F4F Wildcat",
+    "cruiseSpeed": 90,
+    "maxSpeed": 155,
+    "throttleResponse": 0.95,
+    "turnRate": 0.8,
+    "climbRate": 22,
+    "durability": 120,
+    "armament": { "ammoCapacity": 480, "fireCooldown": 0.15, "damagePerHit": 18, "effectiveRange": 240 },
+    "unlockedByDefault": true
+  },
+  {
+    "id": "sbd_dauntless",
+    "displayName": "SBD Dauntless",
+    "cruiseSpeed": 80,
+    "maxSpeed": 145,
+    "throttleResponse": 0.75,
+    "turnRate": 0.62,
+    "climbRate": 18,
+    "durability": 155,
+    "armament": { "ammoCapacity": 540, "fireCooldown": 0.18, "damagePerHit": 22, "effectiveRange": 220 },
+    "unlockedByDefault": false
+  },
+  {
+    "id": "a6m_zero",
+    "displayName": "A6M Zero",
+    "cruiseSpeed": 98,
+    "maxSpeed": 165,
+    "throttleResponse": 1.05,
+    "turnRate": 0.92,
+    "climbRate": 26,
+    "durability": 100,
+    "armament": { "ammoCapacity": 420, "fireCooldown": 0.14, "damagePerHit": 16, "effectiveRange": 230 },
+    "unlockedByDefault": false
+  }
+]
