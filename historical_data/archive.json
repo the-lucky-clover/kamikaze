@@ -7,6 +7,13 @@
     "body": "A wall of names appears before every sortie. It is not a scoreboard. It is a reminder that every aircraft in the sky once held a living person whose future narrowed to orders, weather, and fear."
   },
   {
+    "id": "propaganda_and_indoctrination",
+    "title": "The Language of Duty",
+    "category": "Historical",
+    "unlockedByDefault": true,
+    "body": "State media in wartime Japan produced a specific kind of sentence: one that described necessity as honour, and honour as inevitability. Pilots who trained after 1943 learned the vocabulary of sacrifice before they learned to read an altimeter in low visibility. Survivors described receiving both kinds of instruction on the same day."
+  },
+  {
     "id": "midway_letters",
     "title": "Letters Never Posted",
     "category": "Archive",

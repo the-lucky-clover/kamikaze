@@ -113,6 +113,7 @@ public struct PlayerProgression: Codable, Sendable, Equatable {
             }
             return mission
         }
+        return result
     }
 }
 

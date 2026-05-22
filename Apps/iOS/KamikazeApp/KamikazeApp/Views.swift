@@ -269,14 +269,6 @@ struct BriefingView: View {
                 SecondaryButton(title: "Back") {
                     model.showMissionSelect()
                 }
-            }
-            Spacer()
-        }
-        .padding(28)
-    }
-}
-
-struct FlightView: View {
     @EnvironmentObject private var model: AppModel
 
     var body: some View {

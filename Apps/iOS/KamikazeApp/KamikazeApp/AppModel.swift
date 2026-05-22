@@ -126,6 +126,15 @@ final class AppModel: ObservableObject {
         performTransition(to: .briefing)
     }
 
+    func showMissionSelect() {
+        performTransition(to: .missionSelect)
+    }
+
+    func selectMission(_ missionID: String) {
+        selectedMissionID = missionID
+        performTransition(to: .briefing)
+    }
+
     func showMenu() {
         performTransition(to: .menu) {
             self.flightSession?.stop()
@@ -259,6 +268,7 @@ final class FlightSession: ObservableObject {
     private var timer: Timer?
     private let settings: PlayerSettings
     private let audioDirector: AudioDirector
+    private let weatherSeverity: Double
     private let onComplete: (MissionOutcome) -> Void
     private let weatherProfile: WeatherProfile
     private var replayRecorder = ReplayRecorder()
