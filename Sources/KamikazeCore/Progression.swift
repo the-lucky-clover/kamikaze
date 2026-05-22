@@ -1,16 +1,45 @@
 import Foundation
 
+public enum ColorBlindMode: String, Codable, Sendable, CaseIterable {
+    case none
+    case deuteranopia
+    case protanopia
+}
+
+public enum AimAssistLevel: String, Codable, Sendable, CaseIterable {
+    case off
+    case standard
+    case generous
+}
+
 public struct PlayerSettings: Codable, Sendable, Equatable {
     public var musicVolume: Double
     public var effectsVolume: Double
     public var subtitlesEnabled: Bool
     public var invertedPitch: Bool
+    public var colorBlindMode: ColorBlindMode
+    public var aimAssistLevel: AimAssistLevel
+    public var motionBlurEnabled: Bool
+    public var uiScale: Double
 
-    public init(musicVolume: Double = 0.8, effectsVolume: Double = 0.9, subtitlesEnabled: Bool = true, invertedPitch: Bool = false) {
+    public init(
+        musicVolume: Double = 0.8,
+        effectsVolume: Double = 0.9,
+        subtitlesEnabled: Bool = true,
+        invertedPitch: Bool = false,
+        colorBlindMode: ColorBlindMode = .none,
+        aimAssistLevel: AimAssistLevel = .standard,
+        motionBlurEnabled: Bool = false,
+        uiScale: Double = 1.0
+    ) {
         self.musicVolume = musicVolume
         self.effectsVolume = effectsVolume
         self.subtitlesEnabled = subtitlesEnabled
         self.invertedPitch = invertedPitch
+        self.colorBlindMode = colorBlindMode
+        self.aimAssistLevel = aimAssistLevel
+        self.motionBlurEnabled = motionBlurEnabled
+        self.uiScale = uiScale
     }
 }
 
@@ -18,6 +47,7 @@ public struct PlayerProgression: Codable, Sendable, Equatable {
     public var completedMissionIDs: [String]
     public var unlockedAircraftIDs: [String]
     public var unlockedArchiveEntryIDs: [String]
+    public var purchasedUpgradeIDs: [String]
     public var selectedAircraftID: String
     public var settings: PlayerSettings
 
@@ -25,12 +55,14 @@ public struct PlayerProgression: Codable, Sendable, Equatable {
         completedMissionIDs: [String],
         unlockedAircraftIDs: [String],
         unlockedArchiveEntryIDs: [String],
+        purchasedUpgradeIDs: [String],
         selectedAircraftID: String,
         settings: PlayerSettings = PlayerSettings()
     ) {
         self.completedMissionIDs = completedMissionIDs
         self.unlockedAircraftIDs = unlockedAircraftIDs
         self.unlockedArchiveEntryIDs = unlockedArchiveEntryIDs
+        self.purchasedUpgradeIDs = purchasedUpgradeIDs
         self.selectedAircraftID = selectedAircraftID
         self.settings = settings
     }
@@ -39,6 +71,7 @@ public struct PlayerProgression: Codable, Sendable, Equatable {
         completedMissionIDs: [],
         unlockedAircraftIDs: ContentLibrary.aircraft.filter(\.unlockedByDefault).map(\.id),
         unlockedArchiveEntryIDs: ContentLibrary.archive.filter(\.unlockedByDefault).map(\.id),
+        purchasedUpgradeIDs: [],
         selectedAircraftID: ContentLibrary.aircraft.first(where: \.unlockedByDefault)?.id ?? "f4f_wildcat"
     )
 
@@ -49,6 +82,9 @@ public struct PlayerProgression: Codable, Sendable, Equatable {
         unlockArchiveEntry(id: mission.archiveRewardID)
         if let aircraftRewardID = mission.aircraftRewardID {
             unlockAircraft(id: aircraftRewardID)
+        }
+        if let upgradeRewardID = mission.upgradeRewardID {
+            unlockUpgrade(id: upgradeRewardID)
         }
         if !unlockedAircraftIDs.contains(selectedAircraftID) {
             selectedAircraftID = unlockedAircraftIDs.first ?? mission.recommendedAircraftID
@@ -65,13 +101,17 @@ public struct PlayerProgression: Codable, Sendable, Equatable {
         unlockedArchiveEntryIDs.append(id)
     }
 
+    public mutating func unlockUpgrade(id: String) {
+        guard !purchasedUpgradeIDs.contains(id) else { return }
+        purchasedUpgradeIDs.append(id)
+    }
+
     public var availableMissions: [MissionDefinition] {
-        var result: [MissionDefinition] = []
-        let missions = ContentLibrary.missions
-        for (index, mission) in missions.enumerated() {
-            if index == 0 || completedMissionIDs.contains(missions[index - 1].id) {
-                result.append(mission)
+        ContentLibrary.missions.enumerated().compactMap { index, mission in
+            guard index == 0 || completedMissionIDs.contains(mission.id) || completedMissionIDs.contains(ContentLibrary.missions[index - 1].id) else {
+                return nil
             }
+            return mission
         }
         return result
     }

@@ -14,6 +14,11 @@ final class AudioDirector {
         case guns
         case explosion
         case confirm
+        case aaFire
+        case cockpitCreak
+        case rainHeavy
+        case rainLight
+        case engineStrain
     }
 
     private var musicPlayer: AVAudioPlayer?
@@ -48,6 +53,16 @@ final class AudioDirector {
             AudioServicesPlaySystemSound(1322)
         case .confirm:
             AudioServicesPlaySystemSound(1519)
+        case .aaFire:
+            AudioServicesPlaySystemSound(1306)
+        case .cockpitCreak:
+            AudioServicesPlaySystemSound(1111)
+        case .rainHeavy:
+            AudioServicesPlaySystemSound(1301)
+        case .rainLight:
+            AudioServicesPlaySystemSound(1300)
+        case .engineStrain:
+            AudioServicesPlaySystemSound(1005)
         }
     }
 

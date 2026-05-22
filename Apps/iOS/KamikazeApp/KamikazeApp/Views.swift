@@ -31,6 +31,8 @@ struct RootView: View {
                 HangarView()
             case .settings:
                 SettingsView()
+            case .replay:
+                ReplayView()
             }
 
             model.transitionTone.color
@@ -93,7 +95,7 @@ struct AttractModeView: View {
                     .foregroundStyle(Color.white.opacity(0.84))
                     .opacity(animate ? 1 : 0)
                 Spacer()
-                Text("Demonstration reel — flight, storm, tactical overlay, and archive framing")
+                Text("Demonstration reel — flight, storm, tactical overlay, archive framing")
                     .font(.footnote)
                     .foregroundStyle(Color.white.opacity(0.66))
                     .padding(.bottom, 36)
@@ -131,7 +133,7 @@ struct MainMenuView: View {
                 .foregroundStyle(Color(red: 0.93, green: 0.82, blue: 0.68))
                 .frame(maxWidth: 540, alignment: .leading)
             VStack(spacing: 12) {
-                MenuButton(title: "Missions", subtitle: "\(model.availableMissions.count) sortie\(model.availableMissions.count == 1 ? "" : "s") available") {
+                MenuButton(title: "Campaign", subtitle: model.selectedMission.title) {
                     model.audioDirector.playEffect(.confirm)
                     model.showMissionSelect()
                 }
@@ -141,7 +143,7 @@ struct MainMenuView: View {
                 MenuButton(title: "Memorial Archive", subtitle: "\(model.unlockedArchiveEntries.count) entries unlocked") {
                     model.showArchive()
                 }
-                MenuButton(title: "Settings", subtitle: "Audio, subtitles, and pitch") {
+                MenuButton(title: "Settings", subtitle: "Audio, subtitles, accessibility, and UI") {
                     model.showSettings()
                 }
             }
@@ -162,70 +164,72 @@ struct MainMenuView: View {
 struct MissionSelectView: View {
     @EnvironmentObject private var model: AppModel
 
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Select Sortie")
-                    .font(.largeTitle.bold())
-                    .foregroundStyle(.white)
-                Text("Missions unlock in campaign order. Each completed sortie opens an archive entry and a new aircraft.")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.white.opacity(0.7))
-                    .frame(maxWidth: 540, alignment: .leading)
+    private let nodes: [(id: String, point: CGPoint)] = [
+        ("embers_over_midway", CGPoint(x: 0.18, y: 0.3)),
+        ("leyte_gulf_dusk", CGPoint(x: 0.55, y: 0.42)),
+        ("iwo_jima_ash", CGPoint(x: 0.72, y: 0.48)),
+        ("okinawa_ten_go", CGPoint(x: 0.78, y: 0.58)),
+        ("kyushu_kikusui", CGPoint(x: 0.84, y: 0.28)),
+        ("philippine_sea_final", CGPoint(x: 0.62, y: 0.18))
+    ]
 
-                ForEach(model.availableMissions) { mission in
-                    Button {
-                        model.audioDirector.playEffect(.confirm)
-                        model.selectMission(mission.id)
-                    } label: {
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack(alignment: .top) {
-                                VStack(alignment: .leading, spacing: 4) {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            Text("Campaign")
+                .font(.largeTitle.bold())
+                .foregroundStyle(.white)
+            Text("Select an unlocked node to enter the mission briefing.")
+                .foregroundStyle(Color.white.opacity(0.72))
+            GeometryReader { proxy in
+                ZStack {
+                    Canvas { context, size in
+                        let rect = CGRect(origin: .zero, size: size)
+                        context.fill(Path(rect), with: .linearGradient(Gradient(colors: [Color(red: 0.06, green: 0.16, blue: 0.19), Color(red: 0.05, green: 0.08, blue: 0.14)]), startPoint: .zero, endPoint: CGPoint(x: size.width, y: size.height)))
+                        for pair in zip(nodes, nodes.dropFirst()) {
+                            let start = CGPoint(x: pair.0.point.x * size.width, y: pair.0.point.y * size.height)
+                            let end = CGPoint(x: pair.1.point.x * size.width, y: pair.1.point.y * size.height)
+                            var path = Path()
+                            path.move(to: start)
+                            path.addLine(to: end)
+                            context.stroke(path, with: .color(.white.opacity(0.2)), style: StrokeStyle(lineWidth: 2, dash: [6, 8]))
+                        }
+                    }
+                    ForEach(Array(nodes.enumerated()), id: \.offset) { _, node in
+                        if let mission = model.catalog.missions.first(where: { $0.id == node.id }) {
+                            let completed = model.isMissionCompleted(mission)
+                            let unlocked = model.isMissionUnlocked(mission)
+                            let color: Color = completed ? .green : (unlocked ? .white : .gray)
+                            Button {
+                                guard unlocked else { return }
+                                model.selectedMissionID = mission.id
+                                model.showBriefing()
+                            } label: {
+                                VStack(spacing: 4) {
+                                    Circle()
+                                        .fill(color.opacity(unlocked ? 0.9 : 0.5))
+                                        .frame(width: 22, height: 22)
+                                        .overlay(Circle().stroke(color, lineWidth: 2))
                                     Text(mission.title)
-                                        .font(.headline)
-                                    Text(mission.subtitle)
-                                        .font(.subheadline)
-                                        .foregroundStyle(Color(red: 0.92, green: 0.83, blue: 0.7))
-                                }
-                                Spacer()
-                                if model.progression.completedMissionIDs.contains(mission.id) {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundStyle(Color(red: 0.5, green: 0.85, blue: 0.6))
+                                        .font(.caption2.bold())
+                                        .foregroundStyle(.white)
+                                        .multilineTextAlignment(.center)
+                                        .frame(width: 110)
                                 }
                             }
-                            Text(mission.briefing)
-                                .font(.caption)
-                                .foregroundStyle(Color.white.opacity(0.65))
-                                .lineLimit(2)
+                            .buttonStyle(.plain)
+                            .position(x: node.point.x * proxy.size.width, y: node.point.y * proxy.size.height)
                         }
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundStyle(.white)
-                        .background(
-                            model.selectedMissionID == mission.id
-                                ? Color.white.opacity(0.13)
-                                : Color.white.opacity(0.06),
-                            in: RoundedRectangle(cornerRadius: 18)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 18)
-                                .stroke(
-                                    model.selectedMissionID == mission.id
-                                        ? Color(red: 0.93, green: 0.82, blue: 0.68).opacity(0.7)
-                                        : Color.clear,
-                                    lineWidth: 1.5
-                                )
-                        )
                     }
-                    .buttonStyle(.plain)
                 }
-
-                SecondaryButton(title: "Back") {
-                    model.showMenu()
-                }
+                .clipShape(RoundedRectangle(cornerRadius: 26))
+                .overlay(RoundedRectangle(cornerRadius: 26).stroke(Color.white.opacity(0.12), lineWidth: 1))
             }
-            .padding(28)
+            .frame(height: 360)
+            SecondaryButton(title: "Back") {
+                model.showMenu()
+            }
         }
+        .padding(28)
     }
 }
 
@@ -247,6 +251,7 @@ struct BriefingView: View {
             GroupBox {
                 VStack(alignment: .leading, spacing: 10) {
                     Label(model.selectedAircraft.displayName, systemImage: "airplane")
+                    Text(model.weatherProfile(for: model.selectedMission).displayName)
                     ForEach(model.selectedMission.objectives.indices, id: \.self) { index in
                         Text(model.selectedMission.objectives[index].briefText)
                     }
@@ -286,26 +291,21 @@ struct BriefingView: View {
 
                         Spacer()
 
-                        Button(session.isPaused ? "Resume" : "Pause") {
-                            session.togglePause()
+                        VStack(spacing: 10) {
+                            Button(session.cameraMode == .chase ? "Cockpit" : "Chase") {
+                                session.cameraMode = session.cameraMode == .chase ? .cockpit : .chase
+                            }
+                            .buttonStyle(.bordered)
+                            Button(session.isPaused ? "Resume" : "Pause") {
+                                session.togglePause()
+                            }
+                            .buttonStyle(.borderedProminent)
                         }
-                        .buttonStyle(.borderedProminent)
                     }
                     .foregroundStyle(.white)
                     .padding()
 
-                    if let beat = session.cinematicText {
-                        VStack(spacing: 6) {
-                            Text(beat.title.uppercased())
-                                .font(.headline)
-                            Text(beat.body)
-                                .font(.body)
-                                .multilineTextAlignment(.center)
-                        }
-                        .padding(16)
-                        .frame(maxWidth: 560)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
-                    }
+                    CinematicBeatOverlay(beat: session.cinematicText)
 
                     Spacer()
 
@@ -320,8 +320,13 @@ struct BriefingView: View {
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
-                            TacticalOverlayView(snapshot: session.snapshot)
-                                .frame(width: 168, height: 168)
+                            TacticalOverlayView(
+                                snapshot: session.snapshot,
+                                altitude: session.snapshot.player.position.y,
+                                fuelRemaining: session.snapshot.player.fuelRemaining,
+                                stormIntensity: model.weatherProfile(for: model.selectedMission).stormIntensity
+                            )
+                            .frame(width: 168, height: 168)
                         }
 
                         HStack(alignment: .bottom, spacing: 14) {
@@ -332,7 +337,7 @@ struct BriefingView: View {
                                 HoldButton(title: "Throttle -") { active in
                                     session.throttleInput = active ? -0.55 : 0
                                 }
-                                }
+                            }
 
                             VStack(spacing: 8) {
                                 HoldButton(title: "Climb") { active in
@@ -341,14 +346,23 @@ struct BriefingView: View {
                                 HoldButton(title: "Dive") { active in
                                     session.pitchInput = active ? -1 : 0
                                 }
-                                }
+                            }
 
                             VStack(spacing: 8) {
-                                HoldButton(title: "Bank Left") { active in
+                                HoldButton(title: "Yaw Left") { active in
                                     session.yawInput = active ? -1 : 0
                                 }
-                                HoldButton(title: "Bank Right") { active in
+                                HoldButton(title: "Yaw Right") { active in
                                     session.yawInput = active ? 1 : 0
+                                }
+                            }
+
+                            VStack(spacing: 8) {
+                                HoldButton(title: "Roll Left") { active in
+                                    session.rollInput = active ? -1 : 0
+                                }
+                                HoldButton(title: "Roll Right") { active in
+                                    session.rollInput = active ? 1 : 0
                                 }
                             }
 
@@ -385,6 +399,10 @@ struct DebriefView: View {
                            let aircraft = model.catalog.aircraft.first(where: { $0.id == aircraftRewardID }) {
                             Text("Unlocked aircraft: \(aircraft.displayName)")
                         }
+                        if let upgradeRewardID = model.selectedMission.upgradeRewardID,
+                           let upgrade = model.catalog.upgrades.first(where: { $0.id == upgradeRewardID }) {
+                            Text("Unlocked upgrade: \(upgrade.displayName)")
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(.white)
@@ -399,6 +417,9 @@ struct DebriefView: View {
                 }
                 SecondaryButton(title: "Open Archive") {
                     model.showArchive()
+                }
+                SecondaryButton(title: "Replay") {
+                    model.showReplay()
                 }
             }
             Spacer()
@@ -443,38 +464,63 @@ struct HangarView: View {
     @EnvironmentObject private var model: AppModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Hangar")
-                .font(.largeTitle.bold())
-                .foregroundStyle(.white)
-            ForEach(model.unlockedAircraft) { aircraft in
-                Button {
-                    model.selectAircraft(aircraft.id)
-                } label: {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(aircraft.displayName)
-                                .font(.title3.bold())
-                            Text("Cruise \(Int(aircraft.cruiseSpeed)) • Turn \(String(format: "%.2f", aircraft.turnRate)) • Durability \(Int(aircraft.durability))")
-                                .font(.footnote)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Hangar")
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(.white)
+                ForEach(model.unlockedAircraft) { aircraft in
+                    Button {
+                        model.selectAircraft(aircraft.id)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(aircraft.displayName)
+                                    .font(.title3.bold())
+                                Text("Cruise \(Int(aircraft.cruiseSpeed)) • Turn \(String(format: "%.2f", aircraft.turnRate)) • Durability \(Int(aircraft.durability))")
+                                    .font(.footnote)
+                            }
+                            Spacer()
+                            if aircraft.id == model.selectedAircraft.id {
+                                Image(systemName: "checkmark.circle.fill")
+                            }
                         }
-                        Spacer()
-                        if aircraft.id == model.selectedAircraft.id {
-                            Image(systemName: "checkmark.circle.fill")
+                        .padding()
+                        .foregroundStyle(.white)
+                        .background(Color.white.opacity(aircraft.id == model.selectedAircraft.id ? 0.14 : 0.06), in: RoundedRectangle(cornerRadius: 18))
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Upgrades")
+                        .font(.title2.bold())
+                        .foregroundStyle(.white)
+                    if model.unlockedUpgrades.isEmpty {
+                        Text("No upgrades unlocked yet.")
+                            .foregroundStyle(Color.white.opacity(0.68))
+                    } else {
+                        ForEach(model.unlockedUpgrades) { upgrade in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(upgrade.displayName)
+                                    .font(.headline)
+                                Text(upgrade.effectType.rawValue)
+                                    .font(.caption)
+                                    .foregroundStyle(Color.white.opacity(0.65))
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))
                         }
                     }
-                    .padding()
-                    .foregroundStyle(.white)
-                    .background(Color.white.opacity(aircraft.id == model.selectedAircraft.id ? 0.14 : 0.06), in: RoundedRectangle(cornerRadius: 18))
                 }
-                .buttonStyle(.plain)
+
+                SecondaryButton(title: "Back") {
+                    model.showMenu()
+                }
             }
-            SecondaryButton(title: "Back") {
-                model.showMenu()
-            }
-            Spacer()
+            .padding(28)
         }
-        .padding(28)
     }
 }
 
@@ -488,11 +534,24 @@ struct SettingsView: View {
                 .font(.largeTitle.bold())
                 .foregroundStyle(.white)
             Group {
-                SliderRow(title: "Music Volume", value: $draftSettings.musicVolume)
-                SliderRow(title: "Effects Volume", value: $draftSettings.effectsVolume)
+                SliderRow(title: "Music Volume", value: $draftSettings.musicVolume, range: 0...1, suffix: "%")
+                SliderRow(title: "Effects Volume", value: $draftSettings.effectsVolume, range: 0...1, suffix: "%")
                 Toggle("Subtitles", isOn: $draftSettings.subtitlesEnabled)
                 Toggle("Invert Pitch", isOn: $draftSettings.invertedPitch)
+                Toggle("Motion Blur", isOn: $draftSettings.motionBlurEnabled)
+                Picker("Color Blind Mode", selection: $draftSettings.colorBlindMode) {
+                    ForEach(ColorBlindMode.allCases, id: \.self) { mode in
+                        Text(mode.rawValue.capitalized).tag(mode)
+                    }
+                }
+                Picker("Aim Assist", selection: $draftSettings.aimAssistLevel) {
+                    ForEach(AimAssistLevel.allCases, id: \.self) { level in
+                        Text(level.rawValue.capitalized).tag(level)
+                    }
+                }
+                SliderRow(title: "UI Scale", value: $draftSettings.uiScale, range: 0.8...1.4, suffix: "x")
             }
+            .pickerStyle(.menu)
             .tint(Color(red: 0.93, green: 0.82, blue: 0.68))
             .foregroundStyle(.white)
             HStack(spacing: 14) {
@@ -513,18 +572,103 @@ struct SettingsView: View {
     }
 }
 
+struct ReplayView: View {
+    @EnvironmentObject private var model: AppModel
+    @StateObject private var renderer = FlightSceneRenderer()
+    @State private var frameIndex = 0
+
+    var body: some View {
+        VStack(spacing: 16) {
+            if model.lastReplayFrames.isEmpty {
+                Text("No replay available.")
+                    .foregroundStyle(.white)
+            } else {
+                FlightViewport(renderer: renderer)
+                    .frame(height: 360)
+                    .clipShape(RoundedRectangle(cornerRadius: 22))
+                    .onAppear(perform: updateRenderer)
+                Slider(value: Binding(
+                    get: { Double(frameIndex) },
+                    set: { frameIndex = Int($0) }
+                ), in: 0...Double(max(0, model.lastReplayFrames.count - 1)), step: 1)
+                .tint(Color(red: 0.93, green: 0.82, blue: 0.68))
+                let safeIndex = min(max(frameIndex, 0), model.lastReplayFrames.count - 1)
+                Text("Frame \(safeIndex + 1) / \(model.lastReplayFrames.count) — t=\(String(format: "%.1f", model.lastReplayFrames[safeIndex].time))s")
+                    .foregroundStyle(.white)
+            }
+            SecondaryButton(title: "Back") {
+                model.showMenu()
+            }
+        }
+        .padding(28)
+        .onChange(of: frameIndex) { _, _ in
+            updateRenderer()
+        }
+    }
+
+    private func updateRenderer() {
+        guard !model.lastReplayFrames.isEmpty else { return }
+        let safeIndex = min(max(frameIndex, 0), model.lastReplayFrames.count - 1)
+        let frame = model.lastReplayFrames[safeIndex]
+        renderer.applyEnvironment(weather: model.weatherProfile(for: model.selectedMission), tone: model.selectedMission.environmentTone)
+        renderer.update(with: frame.snapshot)
+    }
+}
+
 struct SliderRow: View {
     let title: String
     @Binding var value: Double
+    var range: ClosedRange<Double> = 0...1
+    var suffix: String = "%"
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(title)
                 Spacer()
-                Text("\(Int(value * 100))%")
+                if suffix == "%" {
+                    Text("\(Int(value * 100))%")
+                } else {
+                    Text(String(format: "%.2f%@", value, suffix))
+                }
             }
-            Slider(value: $value, in: 0...1)
+            Slider(value: $value, in: range)
+        }
+    }
+}
+
+struct CinematicBeatOverlay: View {
+    let beat: (title: String, body: String)?
+    @State private var revealedText = ""
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Rectangle().fill(.black).frame(height: 40).opacity(beat == nil ? 0 : 0.8)
+            if let beat {
+                VStack(spacing: 6) {
+                    Text(beat.title.uppercased())
+                        .font(.headline)
+                    Text(revealedText)
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(16)
+                .frame(maxWidth: 560)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+            }
+            Rectangle().fill(.black).frame(height: 40).opacity(beat == nil ? 0 : 0.8)
+        }
+        .animation(.easeInOut(duration: 0.25), value: beat?.title)
+        .task(id: beat?.title ?? "") {
+            guard let beat else {
+                revealedText = ""
+                return
+            }
+            revealedText = ""
+            for character in beat.body {
+                try? await Task.sleep(for: .milliseconds(40))
+                revealedText.append(character)
+            }
         }
     }
 }
@@ -617,6 +761,9 @@ struct HoldButton: View {
 
 struct TacticalOverlayView: View {
     let snapshot: MissionSnapshot
+    let altitude: Double
+    let fuelRemaining: Double
+    let stormIntensity: Double
 
     var body: some View {
         Canvas { context, size in
@@ -630,10 +777,21 @@ struct TacticalOverlayView: View {
                 path.addLine(to: CGPoint(x: size.width - 8, y: size.height / 2))
             }, with: .color(Color.green.opacity(0.35)), lineWidth: 1)
 
-            let stormRect = CGRect(x: size.width * 0.58, y: size.height * 0.16, width: size.width * 0.28, height: size.height * 0.42)
-            context.fill(Path(ellipseIn: stormRect), with: .color(Color.orange.opacity(0.18)))
+            let altitudeRatio = max(0.0, min(0.95, altitude / 200.0))
+            let altitudeBarHeight = size.height * altitudeRatio
+            let altitudeRect = CGRect(x: 6, y: size.height - altitudeBarHeight - 6, width: 6, height: altitudeBarHeight)
+            context.fill(Path(roundedRect: altitudeRect, cornerRadius: 3), with: .color(.green))
 
             let center = CGPoint(x: size.width / 2, y: size.height / 2)
+            let fuelRadius = max(18, CGFloat(fuelRemaining / 240.0) * size.width * 0.45)
+            for dash in stride(from: 0.0, to: 360.0, by: 16.0) {
+                let start = Angle.degrees(dash)
+                let end = Angle.degrees(dash + 8)
+                var arc = Path()
+                arc.addArc(center: center, radius: fuelRadius, startAngle: start, endAngle: end, clockwise: false)
+                context.stroke(arc, with: .color(.green.opacity(0.4)), lineWidth: 1)
+            }
+
             context.fill(Path(ellipseIn: CGRect(x: center.x - 4, y: center.y - 4, width: 8, height: 8)), with: .color(.green))
 
             for enemy in snapshot.enemies where enemy.isAlive {
@@ -644,6 +802,9 @@ struct TacticalOverlayView: View {
                 let point = CGPoint(x: center.x + offset.x, y: center.y + offset.y)
                 context.fill(Path(CGRect(x: point.x - 3, y: point.y - 3, width: 6, height: 6)), with: .color(.red))
             }
+
+            let weatherRect = CGRect(x: size.width - 22, y: 8, width: 12, height: 12)
+            context.fill(Path(ellipseIn: weatherRect), with: .color(.orange.opacity(0.2 + (stormIntensity * 0.6))))
         }
         .background(Color(red: 0.03, green: 0.08, blue: 0.06).opacity(0.88), in: RoundedRectangle(cornerRadius: 18))
         .overlay(alignment: .topLeading) {
@@ -707,15 +868,15 @@ private extension ObjectiveDefinition {
             return "Escort the fleet wake for \(Int(timeLimit)) seconds."
         }
     }
+}
 
-    private extension TransitionTone {
-        var color: Color {
-            switch self {
-            case .black:
-                return .black
-            case .white:
-                return .white
-            }
+private extension TransitionTone {
+    var color: Color {
+        switch self {
+        case .black:
+            return .black
+        case .white:
+            return .white
         }
     }
 }

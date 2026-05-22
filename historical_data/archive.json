@@ -28,24 +28,108 @@
     "body": "Late-war pilot preparation compressed dramatically as experienced personnel vanished. Diaries and reports describe shorter instruction cycles, thinner maintenance margins, and a deadlier relationship between weather and inexperience."
   },
   {
-    "id": "leyte_naval_doctrine",
-    "title": "The Limits of Doctrine",
+    "id": "indoctrination_system",
+    "title": "The Indoctrination System",
     "category": "Doctrine",
     "unlockedByDefault": false,
-    "body": "The Philippine Sea operations of 1944 exposed the limits of carrier doctrine built on earlier assumptions. Both sides improvised in real time, committing to engagements whose consequences could not be undone before the intelligence supporting them was obsolete."
+    "body": "Wartime education in Japan increasingly merged patriotism with personal sacrifice. By 1944, school curricula, newspapers, and military culture created a framework in which individual survival was framed as selfishness. Historians have documented the pressure this placed on young pilots — not simply to die, but to internalize their death as meaningful."
   },
   {
-    "id": "okinawa_civilian_toll",
-    "title": "Okinawa — The Other Count",
+    "id": "wartime_propaganda",
+    "title": "Wartime Propaganda Machinery",
+    "category": "History",
+    "unlockedByDefault": false,
+    "body": "Both sides of the Pacific War employed propaganda to sustain civilian and military morale. Japanese wartime media typically portrayed sacrifice as noble, defeat as temporary, and the enemy as barbaric. Allied reporting returned the pattern. What survives are the pamphlets, the newsreels, and the silence of the people who saw through them."
+  },
+  {
+    "id": "fuel_crisis_1944",
+    "title": "The Fuel Crisis of 1944",
+    "category": "Logistics",
+    "unlockedByDefault": false,
+    "body": "By late 1944, Japan's fuel supply chain had fractured under Allied submarine and air pressure. Training flights were shortened. Ferry missions cancelled. Combat aircraft arrived at forward bases with less fuel than their planned return routes required. This is why some missions were one-way before they were ever labelled as such."
+  },
+  {
+    "id": "leyte_gulf_doctrine",
+    "title": "Leyte Gulf: Naval Doctrine and Desperation",
+    "category": "History",
+    "unlockedByDefault": false,
+    "body": "The Battle of Leyte Gulf in October 1944 was the largest naval battle in history by tonnage engaged. Japanese planners threw multiple fleets into a coordinated decoy-and-strike maneuver that came within hours of succeeding. It failed. The loss of carrier air cover accelerated the strategic desperation that followed."
+  },
+  {
+    "id": "iwo_jima_letters",
+    "title": "Iwo Jima: Voices from the Ash",
     "category": "Archive",
     "unlockedByDefault": false,
-    "body": "Okinawa was the first battle of the Pacific campaign fought on inhabited Japanese home-territory soil. Civilian casualties exceeded military ones. Families describe being given instructions by retreating soldiers that were not oriented toward survival."
+    "body": "Correspondence recovered from Iwo Jima describes volcanic heat, water shortages, and the psychological weight of a battle both sides knew would be decisive. Marines and Japanese defenders wrote home with the same cadence: they missed ordinary things. Both sides stopped receiving replies at about the same point in the campaign."
   },
   {
-    "id": "fuel_shortage_crisis",
-    "title": "Fuel and Its Absence",
+    "id": "okinawa_ten_go_record",
+    "title": "Okinawa: Ten-Go and the Civilian Dimension",
+    "category": "History",
+    "unlockedByDefault": false,
+    "body": "Operation Ten-Go committed the battleship Yamato and a surface force to a one-way attack on Allied invasion fleets. Simultaneously, Okinawa's civilian population was caught between two military machines. Civilian casualties exceeded military deaths on the island. The battle lasted three months and is considered among the Pacific War's most devastating engagements for all parties."
+  },
+  {
+    "id": "military_censorship",
+    "title": "Wartime Censorship and Memory",
     "category": "Doctrine",
     "unlockedByDefault": false,
-    "body": "By mid-1944 the Japanese fuel supply chain had fractured beyond recovery. Training programs shortened, sorties were rationed, and aircraft sat grounded while replacement parts were redistributed from theaters that were already losing. Pilots flew with less preparation on longer routes to targets they had fewer resources to reach."
+    "body": "Wartime censorship shaped what soldiers, civilians, and historians knew about the conflict as it happened. Japanese censors suppressed casualty figures, defeat accounts, and anti-war sentiment. The result was a population prosecuting a war they were not allowed to understand. Postwar historians spent decades reconstructing what was withheld."
+  },
+  {
+    "id": "pilot_diaries_fragment",
+    "title": "A Pilot's Diary Fragment",
+    "category": "Archive",
+    "unlockedByDefault": false,
+    "body": "A fragment from a training diary, early 1945: 'Practiced carrier approaches again today. Engine cut twice on approach. The instructor said not to worry — that we would not be making many carrier approaches. I did not understand what he meant until the next morning's briefing.' The diary ends there."
+  },
+  {
+    "id": "infrastructure_collapse",
+    "title": "The Collapse of Wartime Infrastructure",
+    "category": "Logistics",
+    "unlockedByDefault": false,
+    "body": "By early 1945, Japan's military-industrial base had fractured severely. Aircraft factories ran below thirty percent capacity. Spare parts for frontline aircraft were diverted from training programs. Mechanics worked on aircraft they knew would not return. Maintenance logs from this period are sparse — not because nothing was recorded, but because there was less and less to record."
+  },
+  {
+    "id": "postwar_memory",
+    "title": "Postwar Memory Debates",
+    "category": "Memorial",
+    "unlockedByDefault": false,
+    "body": "How the Pacific War is remembered differs sharply across national contexts. In Japan, public commemoration of the conflict has been shaped by constitutional pacifism, political controversy, and genuine grief. In the United States, the war is frequently framed through the lens of strategic necessity. In Okinawa, it is remembered as a catastrophe in which the island's people were abandoned by both sides. All three framings contain truth. None is complete."
+  },
+  {
+    "id": "tokko_historical",
+    "title": "Tokko: Historical and Ethical Context",
+    "category": "Memorial",
+    "unlockedByDefault": false,
+    "body": "This game does not glorify tokko (special attack) operations. It represents the historical desperation, coercion, and human cost of a military system that ran out of options and substituted human lives for strategy. The pilots who flew these missions included people who volunteered, people who felt they could not refuse, and people who were assigned without being asked. The archive exists to hold that complexity without resolving it."
+  },
+  {
+    "id": "carrier_losses_record",
+    "title": "Carrier Losses: The Statistical Record",
+    "category": "History",
+    "unlockedByDefault": false,
+    "body": "The Imperial Japanese Navy entered the war with ten fleet carriers. By the end of 1944, effective carrier aviation had ceased to exist as an offensive capability. Trained pilots — a resource that takes years to build — were largely gone. The navy that had struck Pearl Harbor and dominated the early Pacific was, by any operational measure, a different institution by the time of Leyte Gulf."
+  },
+  {
+    "id": "education_framing",
+    "title": "A Note on Educational Framing",
+    "category": "Memorial",
+    "unlockedByDefault": true,
+    "body": "This game reconstructs historical events with care for factual grounding and ethical responsibility. It does not endorse imperial nationalism, militarism, or any form of political extremism. Combat gameplay is a vehicle for empathy and reflection — not celebration. All archival material has been written to support understanding, not glorification. The game is dedicated to everyone the war consumed, on every side."
+  },
+  {
+    "id": "pacific_war_close",
+    "title": "The Pacific War: Final Days",
+    "category": "History",
+    "unlockedByDefault": false,
+    "body": "The Pacific War ended in August 1945 following the atomic bombings of Hiroshima and Nagasaki and the Soviet declaration of war against Japan. The formal surrender took place on September 2, 1945 aboard USS Missouri. By that point, Japan had lost approximately three million military personnel and an estimated 800,000 civilians. The United States lost approximately 420,000 total. The numbers do not convey the texture of individual lives."
+  },
+  {
+    "id": "memorial_dedication",
+    "title": "Memorial Dedication",
+    "category": "Memorial",
+    "unlockedByDefault": true,
+    "body": "To the people who did not choose the war they were handed. To the families who waited. To the historians who spent careers trying to understand it. To the survivors who could not stop seeing it. This game was made with respect for all of them."
   }
 ]

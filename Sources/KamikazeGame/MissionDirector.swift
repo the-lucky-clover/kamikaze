@@ -24,7 +24,12 @@ public struct MissionDirector: Sendable {
 
     public func startMission(id: String) -> GameSimulation? {
         guard let mission = mission(withID: id) else { return nil }
-        return GameSimulation(mission: mission, selectedAircraft: selectedAircraft())
+        return GameSimulation(
+            mission: mission,
+            selectedAircraft: selectedAircraft(),
+            purchasedUpgradeIDs: progression.purchasedUpgradeIDs,
+            aimAssistLevel: progression.settings.aimAssistLevel
+        )
     }
 
     public mutating func applyOutcome(_ outcome: MissionOutcome, for missionID: String) {
