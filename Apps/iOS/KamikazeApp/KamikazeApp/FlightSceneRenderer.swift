@@ -23,6 +23,25 @@ final class FlightSceneRenderer: ObservableObject {
         render(events: snapshot.events)
     }
 
+    func configure(weather: WeatherProfile) {
+        let v = max(0.1, weather.visibility)
+        scene.fogStartDistance = 50 + 200 * v
+        scene.fogEndDistance = 400 + 800 * v
+        let s = weather.stormIntensity
+        let skyR = max(0.04, 0.18 - s * 0.09)
+        let skyG = max(0.06, 0.22 - s * 0.08)
+        let skyB = max(0.08, 0.35 - s * 0.18)
+        skyNode.geometry?.firstMaterial?.diffuse.contents = UIColor(red: skyR, green: skyG, blue: skyB, alpha: 1)
+        let fogR = max(0.04, 0.19 - s * 0.10)
+        let fogG = max(0.05, 0.21 - s * 0.10)
+        let fogB = max(0.06, 0.24 - s * 0.12)
+        scene.fogColor = UIColor(red: fogR, green: fogG, blue: fogB, alpha: 1)
+        let oceanR = max(0.02, 0.06 - s * 0.03)
+        let oceanG = max(0.06, 0.14 - s * 0.04)
+        let oceanB = max(0.12, 0.26 - s * 0.05)
+        oceanNode.geometry?.firstMaterial?.diffuse.contents = UIColor(red: oceanR, green: oceanG, blue: oceanB, alpha: 1)
+    }
+
     private func buildScene() {
         let ambient = SCNLight()
         ambient.type = .ambient

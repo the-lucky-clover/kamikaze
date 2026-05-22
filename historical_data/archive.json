@@ -7,6 +7,13 @@
     "body": "A wall of names appears before every sortie. It is not a scoreboard. It is a reminder that every aircraft in the sky once held a living person whose future narrowed to orders, weather, and fear."
   },
   {
+    "id": "propaganda_and_indoctrination",
+    "title": "The Language of Duty",
+    "category": "Historical",
+    "unlockedByDefault": true,
+    "body": "State media in wartime Japan produced a specific kind of sentence: one that described necessity as honour, and honour as inevitability. Pilots who trained after 1943 learned the vocabulary of sacrifice before they learned to read an altimeter in low visibility. Survivors described receiving both kinds of instruction on the same day."
+  },
+  {
     "id": "midway_letters",
     "title": "Letters Never Posted",
     "category": "Archive",
@@ -19,5 +26,26 @@
     "category": "Doctrine",
     "unlockedByDefault": false,
     "body": "Late-war pilot preparation compressed dramatically as experienced personnel vanished. Diaries and reports describe shorter instruction cycles, thinner maintenance margins, and a deadlier relationship between weather and inexperience."
+  },
+  {
+    "id": "leyte_naval_doctrine",
+    "title": "The Limits of Doctrine",
+    "category": "Doctrine",
+    "unlockedByDefault": false,
+    "body": "The Philippine Sea operations of 1944 exposed the limits of carrier doctrine built on earlier assumptions. Both sides improvised in real time, committing to engagements whose consequences could not be undone before the intelligence supporting them was obsolete."
+  },
+  {
+    "id": "okinawa_civilian_toll",
+    "title": "Okinawa — The Other Count",
+    "category": "Archive",
+    "unlockedByDefault": false,
+    "body": "Okinawa was the first battle of the Pacific campaign fought on inhabited Japanese home-territory soil. Civilian casualties exceeded military ones. Families describe being given instructions by retreating soldiers that were not oriented toward survival."
+  },
+  {
+    "id": "fuel_shortage_crisis",
+    "title": "Fuel and Its Absence",
+    "category": "Doctrine",
+    "unlockedByDefault": false,
+    "body": "By mid-1944 the Japanese fuel supply chain had fractured beyond recovery. Training programs shortened, sorties were rationed, and aircraft sat grounded while replacement parts were redistributed from theaters that were already losing. Pilots flew with less preparation on longer routes to targets they had fewer resources to reach."
   }
 ]

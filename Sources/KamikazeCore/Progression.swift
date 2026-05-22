@@ -66,9 +66,14 @@ public struct PlayerProgression: Codable, Sendable, Equatable {
     }
 
     public var availableMissions: [MissionDefinition] {
-        ContentLibrary.missions.filter { mission in
-            mission.id == ContentLibrary.missions.first?.id || completedMissionIDs.contains(mission.id)
+        var result: [MissionDefinition] = []
+        let missions = ContentLibrary.missions
+        for (index, mission) in missions.enumerated() {
+            if index == 0 || completedMissionIDs.contains(missions[index - 1].id) {
+                result.append(mission)
+            }
         }
+        return result
     }
 }
 
