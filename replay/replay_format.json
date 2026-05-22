@@ -1,0 +1,5 @@
+{
+  "capture": ["input_samples", "simulation_snapshots", "combat_events", "camera_markers"],
+  "editor": ["timeline_scrubbing", "camera_keyframes", "export_mode", "slow_motion"],
+  "memory_safety": ["chunked_capture", "async_serialization", "bounded_retention"]
+}

@@ -1,0 +1,31 @@
+{
+  "style": [
+    "naval_plotting_rooms",
+    "aircraft_instrumentation",
+    "analog_gauges",
+    "grease_pencil_overlays",
+    "worn_military_hardware"
+  ],
+  "avoid": ["futuristic_huds", "neon_cyberpunk", "excessive_clutter"],
+  "overlays": [
+    "naval_tactical_minimap",
+    "radar_overlay",
+    "fleet_tracking",
+    "altitude_indicator",
+    "weather_fronts",
+    "aa_density_heatmap",
+    "target_prioritization_markers",
+    "fuel_range_circle"
+  ],
+  "accessibility": [
+    "scalable_subtitles",
+    "colorblind_modes",
+    "aim_assist",
+    "simplified_controls",
+    "simulation_controls",
+    "audio_dynamic_range",
+    "motion_blur_toggle",
+    "ui_scaling",
+    "remappable_controls"
+  ]
+}

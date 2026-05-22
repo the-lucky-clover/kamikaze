@@ -1,0 +1,14 @@
+{
+  "primary_runtime": "native_ios",
+  "future_targets": ["desktop_browser_webgpu", "desktop_browser_webgl_fallback"],
+  "systems": {
+    "rendering": ["scene_graph", "shader_pipeline", "ocean_simulation", "cloud_renderer", "post_processing"],
+    "input": ["touch", "keyboard", "mouse", "controller", "hotas_optional"],
+    "gameplay": ["mission_system", "weather_system", "damage_model", "replay_system"],
+    "platform": ["save_load_manager", "localization", "accessibility", "async_loading"]
+  },
+  "performance_targets": {
+    "ios": "playable cinematic vertical slice",
+    "browser": "60_fps_goal_with_quality_presets_and_memory_safe_transitions"
+  }
+}

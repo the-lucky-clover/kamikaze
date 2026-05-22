@@ -1,0 +1,38 @@
+[
+  {
+    "id": "embers_over_midway",
+    "title": "Embers Over Midway",
+    "subtitle": "Hold the dawn long enough for the fleet to breathe.",
+    "briefing": "Airfield preparation rolls into launch. From the deck edge and carrier wake, climb into a long transit, locate the fleet screen, break the incoming fighters, then survive the return over a storm-darkening Pacific.",
+    "debrief": "The sea keeps no victory parade. Only wake lines, names, and the silence after engines stop.",
+    "recommendedAircraftID": "f4f_wildcat",
+    "missionDuration": 240,
+    "archiveRewardID": "midway_letters",
+    "aircraftRewardID": "sbd_dauntless",
+    "objectives": [
+      { "type": "destroyAllEnemies" },
+      { "type": "survive", "seconds": 90 }
+    ],
+    "playerSpawn": {
+      "id": "player",
+      "aircraftID": "f4f_wildcat",
+      "team": "player",
+      "position": { "x": 0, "y": 40, "z": 0 },
+      "heading": 0,
+      "pitch": 0,
+      "cinematicIntroDelay": 0
+    },
+    "enemySpawns": [
+      { "id": "zero_lead", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": -120, "y": 55, "z": -360 }, "heading": 0.35, "pitch": 0, "cinematicIntroDelay": 4 },
+      { "id": "zero_wing", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": 90, "y": 52, "z": -400 }, "heading": -0.35, "pitch": 0, "cinematicIntroDelay": 7 },
+      { "id": "zero_tail", "aircraftID": "a6m_zero", "team": "enemy", "position": { "x": 0, "y": 48, "z": -460 }, "heading": 0.1, "pitch": 0, "cinematicIntroDelay": 12 }
+    ],
+    "cinematicBeats": [
+      { "id": "airfield_prep", "triggerTime": 1, "title": "Airfield Preparation", "body": "Crew chiefs wave through salt wind and oil fumes. Nobody mistakes the ritual for safety." },
+      { "id": "transit", "triggerTime": 12, "title": "Long Transit", "body": "The ocean below is beautiful enough to make the mission feel obscene." },
+      { "id": "fleet_discovery", "triggerTime": 22, "title": "Fleet Discovery", "body": "Carrier wakes bloom through the glare. Somewhere beyond them, more young pilots are already committed." },
+      { "id": "attack_run", "triggerTime": 36, "title": "Attack Run", "body": "Every tracer line is a sentence that can never be unsaid." },
+      { "id": "escape", "triggerTime": 85, "title": "Escape or Death", "body": "If the engine holds and the weather relents, point home before memory arrives." }
+    ]
+  }
+]

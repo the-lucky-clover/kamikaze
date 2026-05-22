@@ -1,0 +1,13 @@
+{
+  "effects": [
+    "tracer_fire",
+    "explosion_bursts",
+    "smoke_columns",
+    "fire_loops",
+    "water_splash",
+    "ocean_foam",
+    "rain_shafts",
+    "lightning_flashes"
+  ],
+  "ocean_features": ["wakes", "foam", "reflections", "beaufort_scale_transitions", "storm_turbulence"]
+}

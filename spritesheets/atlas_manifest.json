@@ -1,0 +1,16 @@
+{
+  "atlases": [
+    "ui_atlas",
+    "cockpit_indicators",
+    "radar_icons",
+    "minimap_icons",
+    "damage_decals",
+    "smoke_animation",
+    "ocean_foam",
+    "cloud_textures",
+    "tracer_effects",
+    "explosion_frames",
+    "fire_loops",
+    "water_splash_animations"
+  ]
+}

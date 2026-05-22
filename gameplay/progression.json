@@ -1,0 +1,18 @@
+{
+  "ethos": "survival_preparedness_navigation_efficiency",
+  "allowed_upgrades": [
+    "better_navigation_charts",
+    "improved_engine_tuning",
+    "reduced_fuel_leakage",
+    "reinforced_control_cables",
+    "better_optics",
+    "improved_pilot_stamina",
+    "weather_prediction_tools",
+    "radio_clarity_upgrades"
+  ],
+  "forbidden_upgrades": [
+    "fantasy_boosts",
+    "sci_fi_weapons",
+    "unrealistic_speed_boosts"
+  ]
+}

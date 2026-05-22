@@ -1,0 +1,23 @@
+[
+  {
+    "id": "prologue_memorial",
+    "title": "Roll Call at Dawn",
+    "category": "Memorial",
+    "unlockedByDefault": true,
+    "body": "A wall of names appears before every sortie. It is not a scoreboard. It is a reminder that every aircraft in the sky once held a living person whose future narrowed to orders, weather, and fear."
+  },
+  {
+    "id": "midway_letters",
+    "title": "Letters Never Posted",
+    "category": "Archive",
+    "unlockedByDefault": false,
+    "body": "Recovered fragments describe exhaustion, fuel anxiety, mechanical fragility, and shame rather than heroics. The archive unlock is meant to complicate the mission, not celebrate it."
+  },
+  {
+    "id": "training_collapse",
+    "title": "Pilot Training Collapse",
+    "category": "Doctrine",
+    "unlockedByDefault": false,
+    "body": "Late-war pilot preparation compressed dramatically as experienced personnel vanished. Diaries and reports describe shorter instruction cycles, thinner maintenance margins, and a deadlier relationship between weather and inexperience."
+  }
+]
