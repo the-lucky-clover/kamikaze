@@ -284,6 +284,9 @@ export class GameSimulation {
     if (target.health <= 0) this.events.push({ id: id(), time: this.missionTime, kind: 'destroyed', targetID: target.id })
   }
 
+  /**
+   * Interpolates heading toward a target heading while wrapping around ±π.
+   */
   private steerHeading(current: number, desired: number, rate: number): number {
     const delta = Math.atan2(Math.sin(desired - current), Math.cos(desired - current))
     return current + delta * Math.min(Math.max(rate, 0), 1)

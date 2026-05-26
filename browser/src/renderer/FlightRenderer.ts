@@ -6,6 +6,7 @@ const oceanWaveFrequencyY = 0.012
 const oceanWavePrimaryWeight = 0.6
 const oceanWaveSecondaryWeight = 0.4
 const oceanWaveSecondarySpeedRatio = 0.8
+const maxFrameDeltaSeconds = 0.05
 
 export class FlightRenderer {
   scene = new THREE.Scene()
@@ -211,7 +212,7 @@ export class FlightRenderer {
   animate(): void {
     requestAnimationFrame(() => this.animate())
     const now = performance.now()
-    const deltaTime = Math.min(0.05, (now - this.lastRenderTime) / 1000)
+    const deltaTime = Math.min(maxFrameDeltaSeconds, (now - this.lastRenderTime) / 1000)
     this.lastRenderTime = now
     this.wavePhase += deltaTime * this.oceanWaveSpeed
     this.animateOcean()
