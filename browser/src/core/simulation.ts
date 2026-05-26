@@ -2,6 +2,10 @@ import { AIRole, AircraftBlueprint, CombatEvent, CombatantState, DamageState, Mi
 
 const id = () => Math.random().toString(36).slice(2)
 const aimAssistBonuses = { off: -1.8, standard: 0, generous: 0.4 } as const
+const baseEnemyTargetingCone = 0.72
+const visibilityConePenalty = 0.25
+const hitChanceFloor = { player: 0.16, enemy: 0.12 } as const
+const hitChanceBase = { player: 0.52, enemy: 0.38 } as const
 export type BrowserAimAssistLevel = keyof typeof aimAssistBonuses
 
 export class GameSimulation {
@@ -213,7 +217,7 @@ export class GameSimulation {
       if (combatant.isPlayer || combatant.health <= 0 || !combatant.isActive) return
       const toPlayer = this.player.position.sub(combatant.position)
       if (toPlayer.length < combatant.aircraft.armament.effectiveRange) {
-        const targetingCone = 0.72 - combatant.damageState.visibilityLoss * 0.25
+        const targetingCone = baseEnemyTargetingCone - combatant.damageState.visibilityLoss * visibilityConePenalty
         if (Vector3.dot(this.forward(combatant), toPlayer.normalized) > targetingCone) this.fireIfPossible(index, Team.player)
       }
     })
@@ -243,9 +247,9 @@ export class GameSimulation {
     const alignment = clamp(Vector3.dot(this.forward(attacker), offset.normalized), -1, 1)
     const rangeRatio = clamp(1 - (distance / attacker.aircraft.armament.effectiveRange), 0, 1)
     const focus = clamp((alignment - 0.75) / 0.25, 0, 1)
-    const hitChanceFloor = attacker.isPlayer ? 0.16 : 0.12
-    const hitChanceBase = attacker.isPlayer ? 0.52 : 0.38
-    const hitChance = clamp(hitChanceBase + focus * 0.32 + rangeRatio * 0.24 - target.damageState.stabilityLoss * 0.08, hitChanceFloor, 0.97)
+    const chanceFloor = attacker.isPlayer ? hitChanceFloor.player : hitChanceFloor.enemy
+    const chanceBase = attacker.isPlayer ? hitChanceBase.player : hitChanceBase.enemy
+    const hitChance = clamp(chanceBase + focus * 0.32 + rangeRatio * 0.24 - target.damageState.stabilityLoss * 0.08, chanceFloor, 0.97)
     attacker.ammo -= 1
     attacker.weaponCooldownRemaining = attacker.aircraft.armament.fireCooldown
     const direction = offset.normalized

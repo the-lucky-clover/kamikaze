@@ -1,6 +1,12 @@
 import * as THREE from 'three'
 import { CombatEvent, CombatantState, EnvironmentTone, MissionSnapshot, Vector3, WeatherProfile } from '../core/types'
 
+const oceanWaveFrequencyX = 0.009
+const oceanWaveFrequencyY = 0.012
+const oceanWavePrimaryWeight = 0.6
+const oceanWaveSecondaryWeight = 0.4
+const oceanWaveSecondarySpeedRatio = 0.8
+
 export class FlightRenderer {
   scene = new THREE.Scene()
   camera = new THREE.PerspectiveCamera(70, 1, 0.1, 5000)
@@ -226,7 +232,7 @@ export class FlightRenderer {
     for (let index = 0; index < positions.count; index += 1) {
       const x = positions.getX(index)
       const y = positions.getY(index)
-      const wave = Math.sin((x * 0.009) + this.wavePhase) * 0.6 + Math.cos((y * 0.012) - this.wavePhase * 0.8) * 0.4
+      const wave = Math.sin((x * oceanWaveFrequencyX) + this.wavePhase) * oceanWavePrimaryWeight + Math.cos((y * oceanWaveFrequencyY) - this.wavePhase * oceanWaveSecondarySpeedRatio) * oceanWaveSecondaryWeight
       positions.setZ(index, this.oceanBaseHeights[index] + wave * this.oceanWaveIntensity)
     }
     positions.needsUpdate = true
