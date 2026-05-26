@@ -39,18 +39,21 @@ export class FlightRenderer {
   applyEnvironment(weather: WeatherProfile, tone: EnvironmentTone): void {
     this.scene.fog = new THREE.Fog(0x20252d, 600 * weather.visibility, 2000 * weather.visibility)
     const skyColor = tone === EnvironmentTone.earlyWar ? new THREE.Color(0x4a5d78) : new THREE.Color(0x2a313a)
+    const skyMaterial = this.sky.material as THREE.MeshBasicMaterial
+    const oceanMaterial = this.ocean.material as THREE.MeshStandardMaterial
     this.scene.background = skyColor
-    ;(this.sky.material as THREE.MeshBasicMaterial).color = skyColor.clone().offsetHSL(0, 0.08, 0.06)
+    skyMaterial.color = skyColor.clone().offsetHSL(0, 0.08, 0.06)
     this.directional.color = tone === EnvironmentTone.earlyWar ? new THREE.Color(1, 0.88, 0.68) : new THREE.Color(0.72, 0.74, 0.78)
     this.hemisphere.intensity = 0.7 + weather.visibility * 0.35
-    ;(this.ocean.material as THREE.MeshStandardMaterial).roughness = Math.min(1, 0.4 + weather.oceanRoughness * 0.4)
-    ;(this.ocean.material as THREE.MeshStandardMaterial).metalness = 0.18 + weather.visibility * 0.12
+    oceanMaterial.roughness = Math.min(1, 0.4 + weather.oceanRoughness * 0.4)
+    oceanMaterial.metalness = 0.18 + weather.visibility * 0.12
     this.oceanWaveIntensity = 0.8 + weather.oceanRoughness * 4
     this.oceanWaveSpeed = 0.6 + weather.windIntensity * 2.2
     const visible = Math.max(1, Math.round(weather.cloudDensity * 9))
     this.cloudNodes.forEach((cloud, index) => {
       cloud.visible = index < visible
-      ;(cloud.material as THREE.MeshBasicMaterial).opacity = 0.15 + weather.cloudDensity * 0.45
+      const cloudMaterial = cloud.material as THREE.MeshBasicMaterial
+      cloudMaterial.opacity = 0.15 + weather.cloudDensity * 0.45
     })
   }
 

@@ -289,6 +289,7 @@ export class GameSimulation {
 
   /**
    * Interpolates heading toward a target heading while wrapping around ±π radians.
+   * The atan2(sin(delta), cos(delta)) form normalizes angular difference to [-π, π].
    */
   private steerHeading(current: number, desired: number, rate: number): number {
     const delta = Math.atan2(Math.sin(desired - current), Math.cos(desired - current))
