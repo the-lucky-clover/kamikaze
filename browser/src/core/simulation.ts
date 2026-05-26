@@ -158,7 +158,7 @@ export class GameSimulation {
             const toTarget = target.sub(combatant.position).normalized
             const desiredHeading = Math.atan2(toTarget.x, -toTarget.z)
             const desiredPitch = Math.asin(clamp(toTarget.y, -1, 1))
-            combatant.heading += (desiredHeading - combatant.heading) * Math.min(deltaTime * 0.5, 1)
+            combatant.heading = this.steerHeading(combatant.heading, desiredHeading, deltaTime * 0.5)
             combatant.pitch += (desiredPitch - combatant.pitch) * Math.min(deltaTime * 0.3, 1)
             combatant.throttle = clamp(combatant.throttle + 0.05 * deltaTime, 0.45, 0.82)
           } else {
@@ -172,7 +172,7 @@ export class GameSimulation {
             const formationTarget = lead.position.add(new Vector3(25, 0, -20))
             const toTarget = formationTarget.sub(combatant.position).normalized
             const desiredHeading = Math.atan2(toTarget.x, -toTarget.z)
-            combatant.heading += (desiredHeading - combatant.heading) * Math.min(deltaTime * 0.7, 1)
+            combatant.heading = this.steerHeading(combatant.heading, desiredHeading, deltaTime * 0.7)
             combatant.pitch += (lead.pitch - combatant.pitch) * Math.min(deltaTime * 0.5, 1)
             combatant.throttle = clamp(lead.throttle + 0.05, 0.5, 1)
           } else {
@@ -183,7 +183,7 @@ export class GameSimulation {
         case AIRole.retreat: {
           const away = combatant.position.sub(playerPosition).normalized
           const fleeHeading = Math.atan2(away.x, -away.z)
-          combatant.heading += (fleeHeading - combatant.heading) * Math.min(deltaTime * 0.8, 1)
+          combatant.heading = this.steerHeading(combatant.heading, fleeHeading, deltaTime * 0.8)
           combatant.pitch = clamp(combatant.pitch + 0.4 * deltaTime, -0.2, 0.6)
           combatant.throttle = Math.min(1, combatant.throttle + 0.2 * deltaTime)
           break
@@ -200,7 +200,7 @@ export class GameSimulation {
     const toPlayer = playerPosition.sub(combatant.position).normalized
     const desiredHeading = Math.atan2(toPlayer.x, -toPlayer.z)
     const desiredPitch = Math.asin(clamp(toPlayer.y, -1, 1))
-    combatant.heading += (desiredHeading - combatant.heading) * Math.min(deltaTime * 0.6, 1)
+    combatant.heading = this.steerHeading(combatant.heading, desiredHeading, deltaTime * 0.6)
     combatant.pitch += (desiredPitch - combatant.pitch) * Math.min(deltaTime * 0.35, 1)
     combatant.throttle = clamp(combatant.throttle + 0.1 * deltaTime, 0.5, 1)
   }
@@ -212,7 +212,10 @@ export class GameSimulation {
     this.combatants.forEach((combatant, index) => {
       if (combatant.isPlayer || combatant.health <= 0 || !combatant.isActive) return
       const toPlayer = this.player.position.sub(combatant.position)
-      if (toPlayer.length < combatant.aircraft.armament.effectiveRange) this.fireIfPossible(index, Team.player)
+      if (toPlayer.length < combatant.aircraft.armament.effectiveRange) {
+        const targetingCone = 0.72 - combatant.damageState.visibilityLoss * 0.25
+        if (Vector3.dot(this.forward(combatant), toPlayer.normalized) > targetingCone) this.fireIfPossible(index, Team.player)
+      }
     })
     const playerPos = this.combatants[playerIndex].position
     for (const emitter of this.mission.navalAAEmitters) {
@@ -234,11 +237,23 @@ export class GameSimulation {
     const targets = this.combatants.map((combatant, index) => ({ combatant, index })).filter(({ combatant }) => combatant.team === preferredTargetTeam && combatant.health > 0 && combatant.isActive)
     const targetIndex = this.bestTarget(attackerIndex, targets.map(({ index }) => index))
     if (targetIndex == null) return
+    const target = this.combatants[targetIndex]
+    const offset = target.position.sub(attacker.position)
+    const distance = offset.length
+    const alignment = clamp(Vector3.dot(this.forward(attacker), offset.normalized), -1, 1)
+    const rangeRatio = clamp(1 - (distance / attacker.aircraft.armament.effectiveRange), 0, 1)
+    const focus = clamp((alignment - 0.75) / 0.25, 0, 1)
+    const hitChanceFloor = attacker.isPlayer ? 0.16 : 0.12
+    const hitChanceBase = attacker.isPlayer ? 0.52 : 0.38
+    const hitChance = clamp(hitChanceBase + focus * 0.32 + rangeRatio * 0.24 - target.damageState.stabilityLoss * 0.08, hitChanceFloor, 0.97)
     attacker.ammo -= 1
     attacker.weaponCooldownRemaining = attacker.aircraft.armament.fireCooldown
-    const direction = this.combatants[targetIndex].position.sub(attacker.position).normalized
+    const direction = offset.normalized
     this.events.push({ id: id(), time: this.missionTime, kind: 'shotFired', origin: attacker.position, direction })
-    this.applyDamage(targetIndex, attacker.aircraft.armament.damagePerHit * (attacker.isPlayer ? 1.35 : 1))
+    if (Math.random() <= hitChance) {
+      const impactQuality = 0.5 + rangeRatio * 0.35 + focus * 0.3
+      this.applyDamage(targetIndex, attacker.aircraft.armament.damagePerHit * impactQuality * (attacker.isPlayer ? 1.25 : 1))
+    }
   }
 
   private bestTarget(attackerIndex: number, candidates: number[]): number | undefined {
@@ -259,8 +274,15 @@ export class GameSimulation {
     const target = this.combatants[targetIndex]
     target.health = Math.max(0, target.health - amount)
     target.damageState.applyHit(amount / Math.max(target.aircraft.durability, 1))
+    target.heading += (Math.random() - 0.5) * 0.14
+    target.roll = clamp(target.roll + (Math.random() - 0.5) * 0.5, -1, 1)
     this.events.push({ id: id(), time: this.missionTime, kind: 'hit', targetID: target.id })
     if (target.health <= 0) this.events.push({ id: id(), time: this.missionTime, kind: 'destroyed', targetID: target.id })
+  }
+
+  private steerHeading(current: number, desired: number, rate: number): number {
+    const delta = Math.atan2(Math.sin(desired - current), Math.cos(desired - current))
+    return current + delta * Math.min(Math.max(rate, 0), 1)
   }
 
   private evaluateMissionOutcome(): void {

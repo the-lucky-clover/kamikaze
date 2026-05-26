@@ -8,8 +8,16 @@ export class FlightRenderer {
   private aircraftNodes = new Map<string, THREE.Object3D>()
   private cloudNodes: THREE.Mesh[] = []
   private directional = new THREE.DirectionalLight(0xffe0ba, 1.5)
+  private hemisphere = new THREE.HemisphereLight(0x9bb7ff, 0x1c2733, 0.85)
   private ocean!: THREE.Mesh
   private sky!: THREE.Mesh
+  private oceanWaveIntensity = 1
+  private oceanWaveSpeed = 1
+  private oceanBaseHeights!: Float32Array
+  private wavePhase = 0
+  private lastRenderTime = performance.now()
+  private cameraLookTarget = new THREE.Vector3(0, 0, -1)
+  private combatFX: { mesh: THREE.Mesh; life: number; maxLife: number; growth: number }[] = []
 
   constructor(private host: HTMLElement) {
     // WebGPU could be added later; WebGL is used as the stable fallback.
@@ -25,8 +33,13 @@ export class FlightRenderer {
     this.scene.fog = new THREE.Fog(0x20252d, 600 * weather.visibility, 2000 * weather.visibility)
     const skyColor = tone === EnvironmentTone.earlyWar ? new THREE.Color(0x4a5d78) : new THREE.Color(0x2a313a)
     this.scene.background = skyColor
+    ;(this.sky.material as THREE.MeshBasicMaterial).color = skyColor.clone().offsetHSL(0, 0.08, 0.06)
     this.directional.color = tone === EnvironmentTone.earlyWar ? new THREE.Color(1, 0.88, 0.68) : new THREE.Color(0.72, 0.74, 0.78)
+    this.hemisphere.intensity = 0.7 + weather.visibility * 0.35
     ;(this.ocean.material as THREE.MeshStandardMaterial).roughness = Math.min(1, 0.4 + weather.oceanRoughness * 0.4)
+    ;(this.ocean.material as THREE.MeshStandardMaterial).metalness = 0.18 + weather.visibility * 0.12
+    this.oceanWaveIntensity = 0.8 + weather.oceanRoughness * 4
+    this.oceanWaveSpeed = 0.6 + weather.windIntensity * 2.2
     const visible = Math.max(1, Math.round(weather.cloudDensity * 9))
     this.cloudNodes.forEach((cloud, index) => {
       cloud.visible = index < visible
@@ -59,12 +72,17 @@ export class FlightRenderer {
 
   private buildScene(): void {
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.55))
+    this.scene.add(this.hemisphere)
     this.directional.position.set(200, 240, 160)
     this.scene.add(this.directional)
 
+    const oceanGeometry = new THREE.PlaneGeometry(4000, 4000, 72, 72)
+    const oceanPositions = oceanGeometry.attributes.position as THREE.BufferAttribute
+    this.oceanBaseHeights = new Float32Array(oceanPositions.count)
+    for (let index = 0; index < oceanPositions.count; index += 1) this.oceanBaseHeights[index] = oceanPositions.getZ(index)
     this.ocean = new THREE.Mesh(
-      new THREE.PlaneGeometry(4000, 4000, 10, 10),
-      new THREE.MeshStandardMaterial({ color: 0x15304d, roughness: 0.55, metalness: 0.1 }),
+      oceanGeometry,
+      new THREE.MeshStandardMaterial({ color: 0x15304d, roughness: 0.55, metalness: 0.1, emissive: 0x08131f, emissiveIntensity: 0.25 }),
     )
     this.ocean.rotation.x = -Math.PI / 2
     this.scene.add(this.ocean)
@@ -131,35 +149,67 @@ export class FlightRenderer {
   private updateCamera(player: CombatantState, mode: 'chase' | 'cockpit'): void {
     const playerPosition = new THREE.Vector3(player.position.x, player.position.y, player.position.z)
     const forward = new THREE.Vector3(Math.sin(player.heading) * Math.cos(player.pitch), Math.sin(player.pitch), -Math.cos(player.heading) * Math.cos(player.pitch)).normalize()
+    const desiredPosition = new THREE.Vector3()
+    const desiredLook = playerPosition.clone().add(forward.clone().multiplyScalar(10))
     if (mode === 'cockpit') {
-      this.camera.position.copy(playerPosition.clone().add(forward.clone().multiplyScalar(0.8)).add(new THREE.Vector3(0, 0.3, 0)))
-      this.camera.lookAt(playerPosition.clone().add(forward.clone().multiplyScalar(10)))
+      desiredPosition.copy(playerPosition.clone().add(forward.clone().multiplyScalar(0.8)).add(new THREE.Vector3(0, 0.3, 0)))
     } else {
-      this.camera.position.copy(playerPosition.clone().add(forward.clone().multiplyScalar(-18)).add(new THREE.Vector3(0, 7, 0)))
-      this.camera.lookAt(playerPosition)
+      desiredPosition.copy(playerPosition.clone().add(forward.clone().multiplyScalar(-18)).add(new THREE.Vector3(0, 7, 0)))
+      desiredLook.copy(playerPosition.clone().add(forward.clone().multiplyScalar(7)))
     }
+    const smoothing = mode === 'cockpit' ? 0.28 : 0.15
+    this.camera.position.lerp(desiredPosition, smoothing)
+    this.cameraLookTarget.lerp(desiredLook, smoothing + 0.04)
+    this.camera.lookAt(this.cameraLookTarget)
     this.sky.position.copy(playerPosition)
+    const cloudDrift = this.wavePhase * 45
     this.cloudNodes.forEach((cloud, index) => {
-      cloud.position.set(player.position.x + index * 120 - 300, 120 + (index % 3) * 25, player.position.z - (220 + index * 55))
+      cloud.position.set(
+        player.position.x + index * 120 - 300 + cloudDrift * (0.2 + index * 0.04),
+        120 + (index % 3) * 25 + Math.sin(this.wavePhase * 0.9 + index) * 5,
+        player.position.z - (220 + index * 55),
+      )
     })
   }
 
   private renderEvents(events: CombatEvent[]): void {
     events.forEach((event) => {
       if (event.kind === 'shotFired') {
-        const tracer = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 16), new THREE.MeshBasicMaterial({ color: 0xffdd55 }))
+        const tracer = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 16), new THREE.MeshBasicMaterial({ color: 0xffdd55, transparent: true, opacity: 0.95 }))
         const origin = new THREE.Vector3(event.origin.x, event.origin.y, event.origin.z)
         const direction = new THREE.Vector3(event.direction.x, event.direction.y, event.direction.z).normalize()
         tracer.position.copy(origin.clone().add(direction.clone().multiplyScalar(8)))
         tracer.lookAt(origin.clone().add(direction.clone().multiplyScalar(16)))
         this.scene.add(tracer)
-        setTimeout(() => this.scene.remove(tracer), 120)
+        this.combatFX.push({ mesh: tracer, life: 0.12, maxLife: 0.12, growth: 0.2 })
+      }
+      if (event.kind === 'hit') {
+        const node = this.aircraftNodes.get(event.targetID)
+        if (!node) return
+        const impact = new THREE.Mesh(new THREE.SphereGeometry(0.45, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff7a45, transparent: true, opacity: 0.9 }))
+        impact.position.copy(node.position)
+        this.scene.add(impact)
+        this.combatFX.push({ mesh: impact, life: 0.22, maxLife: 0.22, growth: 3.8 })
+      }
+      if (event.kind === 'destroyed') {
+        const node = this.aircraftNodes.get(event.targetID)
+        if (!node) return
+        const blast = new THREE.Mesh(new THREE.SphereGeometry(1.2, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffc87b, transparent: true, opacity: 0.95 }))
+        blast.position.copy(node.position)
+        this.scene.add(blast)
+        this.combatFX.push({ mesh: blast, life: 0.5, maxLife: 0.5, growth: 8 })
       }
     })
   }
 
   animate(): void {
     requestAnimationFrame(() => this.animate())
+    const now = performance.now()
+    const deltaTime = Math.min(0.05, (now - this.lastRenderTime) / 1000)
+    this.lastRenderTime = now
+    this.wavePhase += deltaTime * this.oceanWaveSpeed
+    this.animateOcean()
+    this.updateCombatFX(deltaTime)
     this.renderer.render(this.scene, this.camera)
   }
 
@@ -169,5 +219,30 @@ export class FlightRenderer {
     this.camera.aspect = width / Math.max(height, 1)
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(width, height)
+  }
+
+  private animateOcean(): void {
+    const positions = (this.ocean.geometry as THREE.PlaneGeometry).attributes.position as THREE.BufferAttribute
+    for (let index = 0; index < positions.count; index += 1) {
+      const x = positions.getX(index)
+      const y = positions.getY(index)
+      const wave = Math.sin((x * 0.009) + this.wavePhase) * 0.6 + Math.cos((y * 0.012) - this.wavePhase * 0.8) * 0.4
+      positions.setZ(index, this.oceanBaseHeights[index] + wave * this.oceanWaveIntensity)
+    }
+    positions.needsUpdate = true
+  }
+
+  private updateCombatFX(deltaTime: number): void {
+    for (let index = this.combatFX.length - 1; index >= 0; index -= 1) {
+      const fx = this.combatFX[index]
+      fx.life -= deltaTime
+      fx.mesh.scale.multiplyScalar(1 + fx.growth * deltaTime)
+      const material = fx.mesh.material as THREE.MeshBasicMaterial
+      material.opacity = Math.max(0, fx.life / fx.maxLife)
+      if (fx.life <= 0) {
+        this.scene.remove(fx.mesh)
+        this.combatFX.splice(index, 1)
+      }
+    }
   }
 }
