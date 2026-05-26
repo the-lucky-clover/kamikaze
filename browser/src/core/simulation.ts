@@ -6,6 +6,9 @@ const baseEnemyTargetingCone = 0.72
 const visibilityConePenalty = 0.25
 const hitChanceFloor = { player: 0.16, enemy: 0.12 } as const
 const hitChanceBase = { player: 0.52, enemy: 0.38 } as const
+const impactQualityBase = 0.5
+const impactQualityRangeWeight = 0.35
+const impactQualityFocusWeight = 0.3
 export type BrowserAimAssistLevel = keyof typeof aimAssistBonuses
 
 export class GameSimulation {
@@ -255,7 +258,7 @@ export class GameSimulation {
     const direction = offset.normalized
     this.events.push({ id: id(), time: this.missionTime, kind: 'shotFired', origin: attacker.position, direction })
     if (Math.random() <= hitChance) {
-      const impactQuality = 0.5 + rangeRatio * 0.35 + focus * 0.3
+      const impactQuality = impactQualityBase + rangeRatio * impactQualityRangeWeight + focus * impactQualityFocusWeight
       this.applyDamage(targetIndex, attacker.aircraft.armament.damagePerHit * impactQuality * (attacker.isPlayer ? 1.25 : 1))
     }
   }
@@ -285,7 +288,7 @@ export class GameSimulation {
   }
 
   /**
-   * Interpolates heading toward a target heading while wrapping around ±π.
+   * Interpolates heading toward a target heading while wrapping around ±π radians.
    */
   private steerHeading(current: number, desired: number, rate: number): number {
     const delta = Math.atan2(Math.sin(desired - current), Math.cos(desired - current))

@@ -1,5 +1,7 @@
 import { CombatEvent, MissionOutcome, MissionSnapshot } from '../core/types'
 
+const tacticalRadarRange = 320
+
 export class HUD {
   private root = document.createElement('div')
   private stats = document.createElement('div')
@@ -98,9 +100,8 @@ export class HUD {
     snapshot.enemies.filter((enemy) => enemy.health > 0).forEach((enemy) => {
       const offsetX = enemy.position.x - snapshot.player.position.x
       const offsetY = enemy.position.z - snapshot.player.position.z
-      const radarRange = 320
-      const scaledX = Math.max(-74, Math.min(74, (offsetX / radarRange) * 74))
-      const scaledY = Math.max(-74, Math.min(74, (offsetY / radarRange) * 74))
+      const scaledX = Math.max(-74, Math.min(74, (offsetX / tacticalRadarRange) * 74))
+      const scaledY = Math.max(-74, Math.min(74, (offsetY / tacticalRadarRange) * 74))
       context.fillRect(90 + scaledX - 3, 90 + scaledY - 3, 6, 6)
     })
   }
